@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": ".NET Core Launch (web)",
+        "type": "coreclr",
+        "request": "attach",
+        "preLaunchTask": "build",
+        "sourceFileMap": {
+          "/Views": "${workspaceFolder}/Views"
+        },
+        "requireExactSource": false
+      }
+    ]
+  }

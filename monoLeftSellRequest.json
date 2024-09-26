@@ -1,0 +1,23 @@
+{
+    "fiat": "UAH",
+    "page": 1,
+    "rows": 10,
+    "tradeType": "SELL",
+    "asset": "USDT",
+    "countries": [],
+    "proMerchantAds": false,
+    "shieldMerchantAds": false,
+    "filterType": "all",
+    "periods": [],
+    "additionalKycVerifyFilter": 0,
+    "publisherType": "merchant",
+    "payTypes": [
+      "Monobank"
+    ],
+    "classifies": [
+      "mass",
+      "profession",
+      "fiat_trade"
+    ],
+    "transAmount": 20000
+  }

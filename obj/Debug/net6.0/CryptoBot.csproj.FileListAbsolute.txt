@@ -19,3 +19,4 @@ D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\ref\CryptoBot.dll
 D:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\Common.dll
 D:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\Spot.dll
 d:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\HtmlAgilityPack.dll
+d:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.sourcelink.json

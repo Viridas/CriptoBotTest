@@ -21,6 +21,7 @@ class Program
     private static Dictionary<long, bool> ifInshaHotivkaTaken = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifNotBankingTaken = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifCheckNumber = new Dictionary<long, bool>();
+    private static Dictionary<long, bool> insheService = new Dictionary<long, bool>();
     private static Dictionary<long, bool> inshe = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifTRC20Taken = new Dictionary<long, bool>();
     static async Task Main(string[] args)
@@ -91,13 +92,13 @@ class Program
                 {
                     new[]
                     {
-                        new KeyboardButton("Нова заявка"),
-                        new KeyboardButton("Про нас, умови та графік роботи")
+                        new KeyboardButton("Нова заявка 📥"),
+                        new KeyboardButton("Умови та про нас 📃")
                     },
                     new[]
                     {
-                        new KeyboardButton("Ваші відгуки"),
-                        new KeyboardButton("Наша спільнота")
+                        new KeyboardButton("Ваші відгуки 💬"),
+                        new KeyboardButton("Наша спільнота 📣")
                     }
                 })
         {
@@ -204,7 +205,7 @@ class Program
                 );
             }
         }
-        else if (inshe.ContainsKey(chatId) && inshe[chatId] == true)
+        else if (insheService.ContainsKey(chatId) && insheService[chatId] == true)
         {
             var inlineKeyboard = new InlineKeyboardMarkup(new[]
             {
@@ -289,6 +290,7 @@ class Program
             else if (msg.Text == "Нова заявка 📥")
             {
                 inshe[chatId] = false;
+                insheService[chatId] = false;
                 ifCheckNumber[chatId] = false;
                 HowMuchGet[chatId] = false;
                 ifInshaHotivkaTaken[chatId] = false;
@@ -644,7 +646,7 @@ class Program
 
                                     await botClient.SendTextMessageAsync(
                                         chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} одиниць",
+                                        text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: {costomerModel[chatId].CurrencyCell}\n⬅️ Отримуєте: {costomerModel[chatId].CurrencyGet}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: {costomerModel[chatId].HowMuchGives} одиниць",
                                         replyMarkup: inlineKeyboard,
                                         parseMode: ParseMode.Markdown,
                                         cancellationToken: cancellationToken
@@ -801,7 +803,7 @@ class Program
                     cancellationToken: cancellationToken
                 );
             }
-            else if (ifInshaHotivkaTaken.ContainsKey(chatId) && ifTRC20Taken.ContainsKey(chatId))
+            else if (ifInshaHotivkaTaken.ContainsKey(chatId) && ifTRC20Taken.ContainsKey(chatId) && (ifInshaHotivkaTaken[chatId] || ifTRC20Taken[chatId]))
             {
                 if (ifInshaHotivkaTaken[chatId])
                 {
@@ -897,7 +899,7 @@ class Program
                             {
                                 new[]
                                 {
-                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
+                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
                                 }
                             });
 
@@ -915,7 +917,7 @@ class Program
                                 {
                                 new[]
                                 {
-                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
+                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
                                 }
                             });
 
@@ -930,7 +932,63 @@ class Program
                     }
                 }
             }
+            else if (inshe.ContainsKey(chatId) || inshe[chatId] == true)
+            {
+                if (msg.Text.Replace(" ", "").Length > 500)
+                {
+                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗ Некоректна форма введення ❗️\nМаксимальна кількість символів без пробілів - 500",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                    );
+                }
 
+                costomerModel[chatId].Service = msg.Text;
+
+                if (costomerModel[chatId].Phone == null)
+                {
+                    var keyboard = new ReplyKeyboardMarkup(new[]
+                    {
+                            new[]
+                            {
+                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
+                            }
+                        })
+                    {
+                        OneTimeKeyboard = true,
+                        ResizeKeyboard = true
+                    };
+
+                    insheService[chatId] = true;
+
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: "Надішліть ваш контакт Telegram, щоб менеджер👨🏻‍💻 міг з вами зв'язатись.",
+                        replyMarkup: keyboard);
+                }
+                else
+                {
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                            new[]
+                            {
+                                InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                            }
+                        });
+
+                    Random random = new Random();
+                    int randomNumber = random.Next(1, 1001);
+
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: {costomerModel[chatId].Service}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: Ярослав, @yarius13\n \nСтатус заявки: Не підтверджена ⚠️",
+                        replyMarkup: inlineKeyboard,
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+                }
+            }
             else
             {
                 lastMessage[chatId] = await botClient.SendTextMessageAsync(
@@ -1169,7 +1227,7 @@ class Program
 
                 );
             }
-            else if (query.Data == "w1" || query.Data == "w2" || query.Data == "w3" || query.Data == "w4" || query.Data == "w5" || query.Data == "w6" || query.Data == "w7" || query.Data == "w8")
+            else if (query.Data == "w1" || query.Data == "w2" || query.Data == "w3" || query.Data == "w4" || query.Data == "w5" || query.Data == "w6" || query.Data == "w7")
             {
                 if (ifCheckNumber.ContainsKey(chatId))
                 {
@@ -1210,9 +1268,6 @@ class Program
                         case "w7":
                             Check("Виплата на картки Європи");
                             break;
-                        case "w8":
-                            Check("Інше");
-                            break;
                     }
 
                     if (costomerModel[chatId].Phone == null)
@@ -1229,7 +1284,7 @@ class Program
                             ResizeKeyboard = true
                         };
 
-                        inshe[chatId] = true;
+                        insheService[chatId] = true;
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
@@ -1268,13 +1323,18 @@ class Program
                     cancellationToken: cancellationToken
                 );
             }
+            else if (query.Data == "w8")
+            {
+                inshe[chatId] = true;
+                lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "Опишіть детально ваше завдання або обмін, які хочете здійснити. Вкажіть більше інформації та суму для того, щоб ми могли вам допомогти 📝\n(Ліміт - 500 символів)",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+            }
             else
             {
-                await botClient.DeleteMessageAsync(
-                        chatId: chatId,
-                        messageId: lastMessage[chatId].MessageId,
-                        cancellationToken: cancellationToken
-                    );
                 lastMessage[chatId] = await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "❗ Incorrect command ❗",
@@ -1628,13 +1688,13 @@ class Program
                             {
                                 new[]
                                 {
-                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
+                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
                                 }
                             });
 
                     lastMessage[chatId] = await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: $"Введіть скільки ви віддаєте.",
+                        text: $"Введіть суму Tether, USDT, яку віддаєте ➡️ (ліміт: 500 USDT - 100000 USDT):",
                         replyMarkup: inlineKeyboard,
                         parseMode: ParseMode.Markdown,
                         cancellationToken: cancellationToken
@@ -1810,6 +1870,3 @@ class Program
         }
     }
 }
-
-
-

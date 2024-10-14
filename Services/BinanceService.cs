@@ -54,38 +54,19 @@ namespace CryptoBot.Services
         {
             var buyArithmeticMean = await GetCryptoPriceAsync(buyPath);
             var monoRate = await GetCryptoPriceAsync(sellPath);
-            var sellArithmeticMean = ((monoRate / 100) * 1.5m) + monoRate;
-            if (buyArithmeticMean < sellArithmeticMean)
-            {
-                return Math.Truncate(sellArithmeticMean * 100) / 100;
-            }
-            else
-            {
-                while (buyArithmeticMean > sellArithmeticMean)
-                {
-                    sellArithmeticMean += 0.1m;
-                }
-                return Math.Truncate(sellArithmeticMean * 100) / 100;
-            }
+            var price = buyArithmeticMean > monoRate ? buyArithmeticMean : monoRate;
+            var sellArithmeticMean = ((price / 100) * 1.5m) + monoRate;
+            return Math.Truncate(sellArithmeticMean * 100) / 100;
         }
 
         public async Task<decimal> CountLeftProcentPriceAsync(string buyPath, string sellPath)
         {
             var buyArithmeticMean = await GetCryptoPriceAsync(buyPath);
             var rate = await GetCryptoPriceAsync(sellPath);
-            var sellArithmeticMean = rate - ((rate / 100) * 1.5m);
-            if (buyArithmeticMean > sellArithmeticMean)
-            {
-                return Math.Truncate(sellArithmeticMean * 100) / 100;
-            }
-            else
-            {
-                while (buyArithmeticMean < sellArithmeticMean)
-                {
-                    sellArithmeticMean -= 0.1m;
-                }
-                return Math.Truncate(sellArithmeticMean * 100) / 100;
-            }
+            var price = buyArithmeticMean > rate ? rate : buyArithmeticMean;
+            var sellArithmeticMean = price - ((price / 100) * 1.5m);
+
+            return Math.Truncate(sellArithmeticMean * 100) / 100;
         }
 
         private async Task<decimal> CountArithmeticMean(decimal i1, decimal i2, decimal i3, decimal i4, decimal i5)

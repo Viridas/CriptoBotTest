@@ -2,8 +2,9 @@ namespace CryptoBot
 {
     public class CostomerModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public decimal HowMuchGives { get; set;}
+        public decimal Course { get; set; }
         public decimal HowMuchGet { get; set;}
         public string CurrencyCell { get; set; }
         public string CurrencyGet { get; set; }
@@ -14,6 +15,6 @@ namespace CryptoBot
         public string CardNumber { get; set; }
         public string Service { get; set; } 
         public bool Order { get; set; }
-        public bool Confirm { get; set; }
+        public bool IfEnd { get; set; }
     }
 }

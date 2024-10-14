@@ -17,13 +17,15 @@ class Program
     private static long adminChatId;
     private static HttpClient httpClient = new HttpClient();
     private static BinanceAPIService binanceService = new BinanceAPIService(httpClient);
-    private static AnotherCryptoService anotherCryptoService = new AnotherCryptoService(httpClient);
     private static Dictionary<long, bool> ifInshaHotivkaTaken = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifNotBankingTaken = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifCheckNumber = new Dictionary<long, bool>();
     private static Dictionary<long, bool> insheService = new Dictionary<long, bool>();
     private static Dictionary<long, bool> inshe = new Dictionary<long, bool>();
     private static Dictionary<long, bool> ifTRC20Taken = new Dictionary<long, bool>();
+    private static Dictionary<long, bool> ifCheckOrder = new Dictionary<long, bool>();
+    private static Dictionary<long, Message> AdminMessage = new Dictionary<long, Message>();
+    private static Dictionary<long, Message> UserMessage = new Dictionary<long, Message>();
     static async Task Main(string[] args)
     {
         currencies.Add("Tether, USDT");
@@ -106,143 +108,15 @@ class Program
             ResizeKeyboard = true
         };
 
-        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Контакт отримано ✅ Тепер ми на зв'язку.",
-                replyMarkup: keyboard,
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
+        await botClient.SendTextMessageAsync(
+               chatId: chatId,
+               text: $"*Контакт отримано* ✅ Тепер ми на зв'язку.",
+               replyMarkup: keyboard,
+               parseMode: ParseMode.Markdown,
+               cancellationToken: cancellationToken
+           );
 
-        int min = 0;
-        int max = 0;
-        if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]))
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
-                }
-            });
-
-            min = 100;
-            max = 20000;
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Введіть суму Tether, USDT, яку віддаєте ➡️ (ліміт: {min} USDT - {max} USDT):",
-                replyMarkup: inlineKeyboard,
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
-        }
-        else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3]))
-        {
-            min = 4000;
-            max = 900000;
-
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
-                }
-            });
-
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Введіть скільки ви віддаєте. Мінімум: {min}, Максимум: {max}",
-                replyMarkup: inlineKeyboard,
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
-        }
-        else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8]))
-        {
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Зазначне суму USDT, яку віддаєте",
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
-        }
-        else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
-        {
-            if (costomerModel[chatId].CurrencyCell == currencies[7])
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                            {
-                                new[]
-                                {
-                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
-                                }
-                            });
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Зазначне суму {currencies[7]}, яку віддаєте",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (costomerModel[chatId].CurrencyCell == currencies[8])
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                            {
-                                new[]
-                                {
-                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки я отримаю", "howManyGet"),
-                                }
-                            });
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Зазначне суму {currencies[8]}, яку віддаєте",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-        }
-        else if (insheService.ContainsKey(chatId) && insheService[chatId] == true)
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
-                }
-            });
-
-            Random random = new Random();
-            int randomNumber = random.Next(1, 1001);
-
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: {costomerModel[chatId].Service}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: Ярослав, @yarius13\n \nСтатус заявки: Не підтверджена ⚠️",
-                replyMarkup: inlineKeyboard,
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
-        }
-        else
-        {
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"З вмами скоро зв'яжеться адміністратор",
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
-        }
-
-
-        // lastMessage[chatId] = await botClient.SendTextMessageAsync(
-        //     chatId: adminChatId,
-        //     text: $"Нова заявка!\n Ім'я: {costomerModel[chatId].FirstName}\n Фамілія: {costomerModel[chatId].LastName}\n Номер телефону: {costomerModel[chatId].Phone}\n Яку валюту віддає: {costomerModel[chatId].CurrencyCell} \n Скільки віддає: {costomerModel[chatId].HowMuchGives} \n Яку валюту отримує: {costomerModel[chatId].CurrencyGet} \n Номер карти: {costomerModel[chatId].CardNumber}",
-        //     parseMode: ParseMode.Markdown,
-        //     cancellationToken: cancellationToken
-        // );
+        ProccesHowManyGive(botClient, chatId, cancellationToken);
     }
     static async Task OnMessage(ITelegramBotClient botClient, Message msg, CancellationToken cancellationToken)
     {
@@ -252,6 +126,7 @@ class Program
         {
             if (msg.Text == "/start")
             {
+                ZeroVariables(botClient, chatId, cancellationToken);
                 var keyboard = new ReplyKeyboardMarkup(new[]
                 {
                     new[]
@@ -270,6 +145,18 @@ class Program
                     ResizeKeyboard = true
                 };
 
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "*Меню* 🔁:",
+                   replyMarkup: keyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+            else if (msg.Text == "Нова заявка 📥")
+            {
+                ZeroVariables(botClient, chatId, cancellationToken);
+
                 if (!costomerModel.ContainsKey(chatId))
                 {
                     costomerModel.Add(chatId, new CostomerModel() { Username = msg.From.Username });
@@ -279,23 +166,6 @@ class Program
                     costomerModel[chatId].Username = msg.From.Username;
                 }
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Вітаю!",
-                    replyMarkup: keyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (msg.Text == "Нова заявка 📥")
-            {
-                inshe[chatId] = false;
-                insheService[chatId] = false;
-                ifCheckNumber[chatId] = false;
-                HowMuchGet[chatId] = false;
-                ifInshaHotivkaTaken[chatId] = false;
-                ifNotBankingTaken[chatId] = false;
-                ifTRC20Taken[chatId] = false;
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
                     new[]
@@ -310,15 +180,19 @@ class Program
                     {
                         InlineKeyboardButton.WithCallbackData("Інший обмін та послуги з криптовалютами🧾", "other")
                     },
+                    new[]
+                    {
+                        InlineKeyboardButton.WithUrl("Менеджер👨🏻‍💻", "https://t.me/exchanger13")
+                    },
                 });
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Нова заявка 📥",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Нова заявка 📥",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (msg.Text == "Умови та про нас 📃")
             {
@@ -330,13 +204,13 @@ class Program
                     }
                 });
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Умови та про нас 📃",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Умови та про нас 📃",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (msg.Text == "Ваші відгуки 💬")
             {
@@ -348,13 +222,13 @@ class Program
                     }
                 });
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Ваші відгуки 💬",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Ваші відгуки 💬",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (msg.Text == "Наша спільнота 📣")
             {
@@ -362,382 +236,627 @@ class Program
                 {
                     new[]
                     {
-                        InlineKeyboardButton.WithUrl("Приєднатись↗️", "https://t.me/reviews_13exchanger"),
+                        InlineKeyboardButton.WithUrl("Приєднатись↗️", "https://t.me/+upJjUrcOTR8wMjAy"),
                     }
                 });
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Наша спільнота 📣",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Наша спільнота 📣",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
-            else if (decimal.TryParse(msg.Text, out decimal count) && count.ToString().Length != 16)
+            else if (decimal.TryParse(msg.Text, out decimal count) && count.ToString().Length != 16 && ifCheckNumber.ContainsKey(chatId) && ifCheckNumber[chatId] == false)
             {
                 if (costomerModel.ContainsKey(chatId))
                 {
                     if (HowMuchGet.ContainsKey(chatId))
                     {
-                        if (HowMuchGet[chatId] == true)
+                        if (!ifTRC20Taken[chatId])
                         {
-                            if (costomerModel[chatId].CurrencyCell == currencies[0])
+                            if (costomerModel[chatId].IfEnd)
                             {
-                                if (count < 100 || count > 20000)
+                                if (HowMuchGet[chatId] == true)
                                 {
-                                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: "Введіть суму відповідно до визначених лімітів (min. 100, max. 20000)❗️",
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                    return;
-                                }
-                                if (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[3])
-                                {
-                                    costomerModel[chatId].HowMuchGives = Math.Round(count / await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json"), 2);
-                                    costomerModel[chatId].HowMuchGet = count;
+                                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                                    {
+                                        if (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[3])
+                                        {
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = Math.Round(count / course, 2);
+                                            costomerModel[chatId].HowMuchGet = count;
+                                            var min = 100 * course;
+                                            var max = 20000 * course;
 
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                    new[]
-                                    {
-                                        InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
+                                            if (count < min || count > max)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: $"❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                                new[]
+                                                {
+                                                    InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                                },
+                                                new[]
+                                                {
+                                                    InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                                }
+                                            });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(100, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyGet == currencies[2])
+                                        {
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = Math.Round(count / course, 2);
+                                            costomerModel[chatId].HowMuchGet = count;
+
+                                            var min = 100 * course;
+                                            var max = 20000 * course;
+
+                                            if (count < min || count > max)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: $"❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(100, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])
+                                        {
+                                            if (costomerModel[chatId].CurrencyGet == currencies[17] && (count < 20000 || count > 4500000))
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                    chatId: chatId,
+                                                    text: $"❗ Некоректна форма введення ❗️",
+                                                    parseMode: ParseMode.Markdown,
+                                                    cancellationToken: cancellationToken
+                                                );
+                                                return;
+                                            }
+                                            if (count < 500 || count > 100000)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                    chatId: chatId,
+                                                    text: $"❗ Некоректна форма введення ❗️",
+                                                    parseMode: ParseMode.Markdown,
+                                                    cancellationToken: cancellationToken
+                                                );
+                                                return;
+                                            }
+                                            costomerModel[chatId].HowMuchGet = count;
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                                new[]
+                                                {
+                                                    InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                                },
+                                                new[]
+                                                {
+                                                    InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                                }
+                                            });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            string valute = costomerModel[chatId].CurrencyGet == currencies[7] ? "USD" : "EUR";
+                                            if (costomerModel[chatId].CurrencyGet == currencies[17]) valute = "UAH";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {valute}*\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
                                     }
-                                });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} одиниць\nОтримаєте: {costomerModel[chatId].HowMuchGet} гривень",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyGet == currencies[2])
-                                {
-                                    costomerModel[chatId].HowMuchGives = Math.Round(count / await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json"), 2);
-                                    costomerModel[chatId].HowMuchGet = count;
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                    else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3] || costomerModel[chatId].CurrencyCell == currencies[2])
                                     {
+                                        if (count < 100 || count > 20000)
+                                        {
+                                            await botClient.SendTextMessageAsync(
+                                               chatId: chatId,
+                                               text: "❗ Некоректна форма введення ❗️",
+                                               parseMode: ParseMode.Markdown,
+                                               cancellationToken: cancellationToken
+                                           );
+                                            return;
+                                        }
+                                        if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
+                                        {
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count * course;
+                                            costomerModel[chatId].HowMuchGet = count;
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
                                         new[]
                                         {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
                                         }
                                     });
 
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
 
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} одиниць\nОтримаєте: {costomerModel[chatId].HowMuchGet} гривень",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8])
-                                {
-                                    costomerModel[chatId].HowMuchGet = count;
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
 
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyCell == currencies[2])
+                                        {
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count * course;
+                                            costomerModel[chatId].HowMuchGet = count;
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
                                         new[]
                                         {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
                                         }
                                     });
 
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
 
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nОтримаєте: {costomerModel[chatId].HowMuchGet} {costomerModel[chatId].CurrencyGet}",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                    }
+                                    else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])
+                                    {
+                                        if (count < 500 || count > 100000)
+                                        {
+                                            await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"❗ Некоректна форма введення ❗️",
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            return;
+                                        }
+                                        costomerModel[chatId].HowMuchGet = count;
+
+                                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                        {
+                                            new[]
+                                            {
+                                                InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                            },
+                                            new[]
+                                            {
+                                                InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                            }
+                                        });
+
+                                        Random random = new Random();
+                                        int randomNumber = random.Next(101, 1000);
+                                        costomerModel[chatId].Id = randomNumber;
+
+                                        UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                            chatId: chatId,
+                                            text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                            replyMarkup: inlineKeyboard,
+                                            parseMode: ParseMode.Markdown,
+                                            cancellationToken: cancellationToken
+                                        );
+                                        SendToAdmin(botClient, chatId, cancellationToken);
+                                    }
+                                }
+                                else
+                                {
+                                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                                    {
+                                        if (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[3])
+                                        {
+                                            if (count < 100 || count > 20000)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: "❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count;
+                                            costomerModel[chatId].HowMuchGet = count * course;
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var confirm = "Не підтверджена ⚠️";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyGet == currencies[2])
+                                        {
+                                            if (count < 100 || count > 20000)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: "❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count;
+                                            costomerModel[chatId].HowMuchGet = count * course;
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var confirm = "Не підтверджена ⚠️";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])
+                                        {
+                                            if (count < 500 || count > 100000)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                               chatId: chatId,
+                                               text: "❗ Некоректна форма введення ❗️",
+                                               parseMode: ParseMode.Markdown,
+                                               cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+                                            costomerModel[chatId].HowMuchGives = count;
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: *{costomerModel[chatId].HowMuchGives} USDT*\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                    }
+                                    else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3] || costomerModel[chatId].CurrencyCell == currencies[2])
+                                    {
+                                        if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
+                                        {
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count;
+                                            costomerModel[chatId].HowMuchGet = Math.Round(count / course, 2);
+
+                                            var min = 100 * course;
+                                            var max = 20000 * course;
+
+                                            if (count < min || count > max)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: $"❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                        else if (costomerModel[chatId].CurrencyCell == currencies[2])
+                                        {
+
+                                            var course = costomerModel[chatId].Course;
+                                            costomerModel[chatId].HowMuchGives = count;
+                                            costomerModel[chatId].HowMuchGet = Math.Round(count / course, 2);
+
+                                            var min = 100 * course;
+                                            var max = 20000 * course;
+
+                                            if (count < min || count > max)
+                                            {
+                                                await botClient.SendTextMessageAsync(
+                                                   chatId: chatId,
+                                                   text: $"❗ Некоректна форма введення ❗️",
+                                                   parseMode: ParseMode.Markdown,
+                                                   cancellationToken: cancellationToken
+                                               );
+                                                return;
+                                            }
+
+                                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                            {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                            Random random = new Random();
+                                            int randomNumber = random.Next(101, 1000);
+                                            costomerModel[chatId].Id = randomNumber;
+
+                                            var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
+                                            var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+
+                                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"📥 Заявка ID:: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                replyMarkup: inlineKeyboard,
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            SendToAdmin(botClient, chatId, cancellationToken);
+                                        }
+                                    }
+                                    else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])
+                                    {
+                                        costomerModel[chatId].HowMuchGives = count;
+
+                                        if (costomerModel[chatId].CurrencyCell == currencies[17] && count < 20000 || count > 4000000)
+                                        {
+                                            await botClient.SendTextMessageAsync(
+                                                chatId: chatId,
+                                                text: $"❗ Некоректна форма введення ❗️",
+                                                parseMode: ParseMode.Markdown,
+                                                cancellationToken: cancellationToken
+                                            );
+                                            return;
+                                        }
+                                        if ((costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8]) && (count < 500 || count > 100000))
+                                        {
+                                            await botClient.SendTextMessageAsync(
+                                               chatId: chatId,
+                                               text: $"❗ Некоректна форма введення ❗️",
+                                               parseMode: ParseMode.Markdown,
+                                               cancellationToken: cancellationToken
+                                            );
+                                            return;
+                                        }
+
+                                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                                                {
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                        },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                                    });
+
+                                        Random random = new Random();
+                                        int randomNumber = random.Next(101, 1000);
+                                        costomerModel[chatId].Id = randomNumber;
+
+                                        string valute = costomerModel[chatId].CurrencyCell == currencies[7] ? "USD" : "EUR";
+                                        if (costomerModel[chatId].CurrencyCell == currencies[17]) valute = "UAH";
+
+                                        UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                            chatId: chatId,
+                                            text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: *{costomerModel[chatId].HowMuchGives} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                            replyMarkup: inlineKeyboard,
+                                            parseMode: ParseMode.Markdown,
+                                            cancellationToken: cancellationToken
+                                        );
+                                        SendToAdmin(botClient, chatId, cancellationToken);
+                                    }
                                 }
                             }
-                            else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3] || costomerModel[chatId].CurrencyCell == currencies[2])
+                            else
                             {
-                                if (count < 100 || count > 20000)
-                                {
-                                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: "Введіть суму відповідно до визначених лімітів (min. 100, max. 20000)❗️",
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                    return;
-                                }
-                                if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
-                                {
-                                    costomerModel[chatId].HowMuchGives = count * await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json");
-                                    costomerModel[chatId].HowMuchGet = count;
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} гривень\nОтримаєте: {costomerModel[chatId].HowMuchGet} одиниць",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyCell == currencies[2])
-                                {
-                                    costomerModel[chatId].HowMuchGives = count * await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json");
-                                    costomerModel[chatId].HowMuchGet = count;
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} гривень\nОтримаєте: {costomerModel[chatId].HowMuchGet} одиниць",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                            }
-                            else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
-                            {
-                                costomerModel[chatId].HowMuchGet = count;
-
-                                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                Random random = new Random();
-                                int randomNumber = random.Next(1, 1001);
-
                                 await botClient.SendTextMessageAsync(
-                                    chatId: chatId,
-                                    text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nОтримаєте: {costomerModel[chatId].HowMuchGet} одиниць",
-                                    replyMarkup: inlineKeyboard,
-                                    parseMode: ParseMode.Markdown,
-                                    cancellationToken: cancellationToken
-                                );
+                                               chatId: chatId,
+                                               text: $"❗ Некоректна форма введення ❗️",
+                                               parseMode: ParseMode.Markdown,
+                                               cancellationToken: cancellationToken
+                                           );
                             }
                         }
                         else
                         {
-                            if (costomerModel[chatId].CurrencyCell == currencies[0])
-                            {
-                                if (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[3])
-                                {
-                                    if (count < 100 || count > 20000)
-                                    {
-                                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                            chatId: chatId,
-                                            text: "Введіть суму відповідно до визначених лімітів (min. 100, max. 20000)❗️",
-                                            parseMode: ParseMode.Markdown,
-                                            cancellationToken: cancellationToken
-                                        );
-                                        return;
-                                    }
-
-                                    var course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
-                                    costomerModel[chatId].HowMuchGives = count;
-                                    costomerModel[chatId].HowMuchGet = count * course;
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                    new[]
-                                    {
-                                        InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
-                                    }
-                                });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-                                    var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "";
-                                    var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
-                                    var confirm = costomerModel[chatId].Confirm == true ? "Заявку підтверджено ✅" : "Не підтверджена ⚠️";
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"📥 Заявка ID:: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: {costomerModel[chatId].HowMuchGet} {getCurr}\n \n🔐 P2P-ордер: {order}\n💳 Номер карти: {costomerModel[chatId].CardNumber}\n📲 Контакт: {costomerModel[chatId].FirstName} @{costomerModel[chatId].Username}",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyGet == currencies[2])
-                                {
-                                    if (count < 100 || count > 20000)
-                                    {
-                                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                            chatId: chatId,
-                                            text: "Введіть суму відповідно до визначених лімітів (min. 100, max. 20000)❗️",
-                                            parseMode: ParseMode.Markdown,
-                                            cancellationToken: cancellationToken
-                                        );
-                                        return;
-                                    }
-
-                                    costomerModel[chatId].HowMuchGives = count;
-                                    costomerModel[chatId].HowMuchGet = count * await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json");
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                    new[]
-                                    {
-                                        InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                    }
-                                });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} одиниць\nОтримаєте: {costomerModel[chatId].HowMuchGet} гривень",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8])
-                                {
-                                    costomerModel[chatId].HowMuchGives = count;
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: {costomerModel[chatId].CurrencyCell}\n⬅️ Отримуєте: {costomerModel[chatId].CurrencyGet}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: {costomerModel[chatId].HowMuchGives} одиниць",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                            }
-                            else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3] || costomerModel[chatId].CurrencyCell == currencies[2])
-                            {
-                                if (count < 4000 || count > 900000)
-                                {
-                                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: "Введіть суму відповідно до визначених лімітів (min. 4000, max. 900000)❗️",
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                    return;
-                                }
-                                if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
-                                {
-                                    costomerModel[chatId].HowMuchGives = count;
-                                    costomerModel[chatId].HowMuchGet = Math.Round(count / await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json"), 2);
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} гривень\nОтримаєте: {costomerModel[chatId].HowMuchGet} одиниць",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                                else if (costomerModel[chatId].CurrencyCell == currencies[2])
-                                {
-                                    costomerModel[chatId].HowMuchGives = count;
-                                    costomerModel[chatId].HowMuchGet = Math.Round(count / await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json"), 2);
-
-                                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                    {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                    Random random = new Random();
-                                    int randomNumber = random.Next(1, 1001);
-
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} гривень\nОтримаєте: {costomerModel[chatId].HowMuchGet} одиниць",
-                                        replyMarkup: inlineKeyboard,
-                                        parseMode: ParseMode.Markdown,
-                                        cancellationToken: cancellationToken
-                                    );
-                                }
-                            }
-                            else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
-                            {
-                                costomerModel[chatId].HowMuchGives = count;
-
-                                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                                        {
-                                        new[]
-                                        {
-                                            InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                                        }
-                                    });
-
-                                Random random = new Random();
-                                int randomNumber = random.Next(1, 1001);
-
-                                await botClient.SendTextMessageAsync(
-                                    chatId: chatId,
-                                    text: $"Заявка на обмін ID: {randomNumber}\nВідправляєте: {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nСума переказу: {costomerModel[chatId].HowMuchGives} {costomerModel[chatId].CurrencyCell}",
-                                    replyMarkup: inlineKeyboard,
-                                    parseMode: ParseMode.Markdown,
-                                    cancellationToken: cancellationToken
-                                );
-                            }
+                            await botClient.SendTextMessageAsync(
+                                               chatId: chatId,
+                                               text: $"❗ Некоректна форма введення ❗️",
+                                               parseMode: ParseMode.Markdown,
+                                               cancellationToken: cancellationToken
+                                           );
                         }
+                    }
+                    else
+                    {
+                        await botClient.SendTextMessageAsync(
+                                           chatId: chatId,
+                                           text: $"❗ Некоректна форма введення ❗️",
+                                           parseMode: ParseMode.Markdown,
+                                           cancellationToken: cancellationToken
+                                       );
                     }
                 }
             }
@@ -745,15 +864,18 @@ class Program
             {
                 if (!ifCheckNumber[chatId])
                 {
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "❗ Некоректна форма введення ❗️",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                    );
+                    await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "❗ Некоректна форма введення ❗️",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+                   );
 
                     return;
                 }
+
+                ifCheckNumber[chatId] = false;
+
                 if (costomerModel.ContainsKey(chatId))
                 {
                     costomerModel[chatId].CardNumber = cardNumber.ToString();
@@ -773,7 +895,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш контакт Telegram, щоб менеджер👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
                     else
@@ -784,24 +907,24 @@ class Program
             }
             else if (msg.Text == "/admingroup")
             {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Введіть пароль",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Введіть пароль",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (msg.Text == "/vsbhupw383e2asnx390g")
             {
                 adminChatId = chatId;
 
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Цей чат тепер для адмінів",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "Цей чат тепер для адмінів",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (ifInshaHotivkaTaken.ContainsKey(chatId) && ifTRC20Taken.ContainsKey(chatId) && (ifInshaHotivkaTaken[chatId] || ifTRC20Taken[chatId]))
             {
@@ -815,33 +938,28 @@ class Program
                         {
                         new[]
                         {
-                            KeyboardButton.WithRequestContact("Надіслати контакт")
+                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
                         }
                     })
                         {
-                            OneTimeKeyboard = true
+                            OneTimeKeyboard = true,
+                            ResizeKeyboard = true
                         };
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку, щоб надіслати свої контактні дані",
+                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
                     else
                     {
-                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                            chatId: chatId,
-                            text: "Дякуємо за довіру, очікуйте декілька хвилин з вами зв'яжеться менеджер для здійснення угоди.",
-                            parseMode: ParseMode.Markdown,
-                            cancellationToken: cancellationToken
-                        );
-
-                        // await botClient.SendTextMessageAsync(
-                        //     chatId: adminChatId,
-                        //     text: $"Нова заявка!\n Ім'я: {costomerModel[chatId].FirstName}\n Фамілія: {costomerModel[chatId].LastName}\n Номер телефону: {costomerModel[chatId].Phone}\n Яку валюту віддає: {costomerModel[chatId].CurrencyCell} \n Скільки віддає: {costomerModel[chatId].HowMuchGives} \n Яку валюту отримує: {costomerModel[chatId].CurrencyGet} \n Номер карти: {costomerModel[chatId].CardNumber}",
-                        //     parseMode: ParseMode.Markdown,
-                        //     cancellationToken: cancellationToken
-                        // );
+                        await botClient.SendTextMessageAsync(
+                           chatId: chatId,
+                           text: "Дякуємо за довіру, очікуйте декілька хвилин з вами зв'яжеться менеджер для здійснення угоди.",
+                           parseMode: ParseMode.Markdown,
+                           cancellationToken: cancellationToken
+                       );
                     }
                 }
                 else if (ifTRC20Taken[chatId])
@@ -853,7 +971,7 @@ class Program
                     {
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Адреса повинна складатись лише з латинських букв(a-Z) і цифр(0-9). Максимум 100 знаків"
+                            text: "❗ Некоректна форма введення ❗️"
                         );
                         return;
                     }
@@ -861,12 +979,13 @@ class Program
                     {
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Максимум 100 знаків"
+                            text: "❗Максимум 100 знаків❗"
                         );
                         return;
                     }
 
                     costomerModel[chatId].CardNumber = msg.Text;
+                    ifTRC20Taken[chatId] = false;
 
                     if (costomerModel[chatId].Phone == null)
                     {
@@ -874,26 +993,30 @@ class Program
                         {
                             new[]
                             {
-                            KeyboardButton.WithRequestContact("Надіслати контакт")
+                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
                             }
                         })
                         {
-                            OneTimeKeyboard = true
+                            OneTimeKeyboard = true,
+                            ResizeKeyboard = true
                         };
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку, щоб надіслати свої контактні дані",
+                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
                     else
                     {
-                        int min = 0;
-                        int max = 0;
+                        decimal min = 0;
+                        decimal max = 0;
                         if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3]))
                         {
-                            min = 4000;
-                            max = 900000;
+                            decimal course = costomerModel[chatId].Course;
+
+                            min = 100 * course;
+                            max = 20000 * course;
 
                             var inlineKeyboard = new InlineKeyboardMarkup(new[]
                             {
@@ -903,15 +1026,15 @@ class Program
                                 }
                             });
 
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви віддаєте. Мінімум: {min}, Максимум: {max}",
-                                replyMarkup: inlineKeyboard,
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
+                            await botClient.SendTextMessageAsync(
+                               chatId: chatId,
+                               text: $"Введіть суму *{costomerModel[chatId].CurrencyCell}* яку віддаєте ➡️ (ліміт: *{min} UAH* - *{max} UAH*):",
+                               replyMarkup: inlineKeyboard,
+                               parseMode: ParseMode.Markdown,
+                               cancellationToken: cancellationToken
+                           );
                         }
-                        else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
+                        else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])
                         {
                             var inlineKeyboard = new InlineKeyboardMarkup(new[]
                                 {
@@ -921,354 +1044,48 @@ class Program
                                 }
                             });
 
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви віддаєте.",
-                                replyMarkup: inlineKeyboard,
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
+                            string valute = costomerModel[chatId].CurrencyCell == currencies[7] ? "USD" : "EUR";
+                            if (costomerModel[chatId].CurrencyCell == currencies[17]) valute = "UAH";
+                            min = costomerModel[chatId].CurrencyCell == currencies[17] ? 20000 : 500;
+                            max = costomerModel[chatId].CurrencyCell == currencies[17] ? 4000000 : 100000;
+
+                            await botClient.SendTextMessageAsync(
+                               chatId: chatId,
+                               text: $"Введіть скільки ви віддаєте ➡️ (ліміт: *{min} {valute} - {max} {valute}*):",
+                               replyMarkup: inlineKeyboard,
+                               parseMode: ParseMode.Markdown,
+                               cancellationToken: cancellationToken
+                           );
                         }
                     }
                 }
             }
-            else if (inshe.ContainsKey(chatId) || inshe[chatId] == true)
+            else if (inshe.ContainsKey(chatId) && ifCheckNumber.ContainsKey(chatId))
             {
-                if (msg.Text.Replace(" ", "").Length > 500)
+                if (ifCheckNumber[chatId])
                 {
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "❗ Некоректна форма введення ❗️\nМаксимальна кількість символів без пробілів - 500",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                    );
-                }
-
-                costomerModel[chatId].Service = msg.Text;
-
-                if (costomerModel[chatId].Phone == null)
-                {
-                    var keyboard = new ReplyKeyboardMarkup(new[]
-                    {
-                            new[]
-                            {
-                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
-                            }
-                        })
-                    {
-                        OneTimeKeyboard = true,
-                        ResizeKeyboard = true
-                    };
-
-                    insheService[chatId] = true;
-
                     await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: "Надішліть ваш контакт Telegram, щоб менеджер👨🏻‍💻 міг з вами зв'язатись.",
-                        replyMarkup: keyboard);
+                chatId: chatId,
+                text: "❗ Некоректна форма введення ❗️",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken
+            );
+                    return;
                 }
-                else
+                if (inshe[chatId] == true)
                 {
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    if (msg.Text.Replace(" ", "").Length > 500)
                     {
-                            new[]
-                            {
-                                InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
-                            }
-                        });
-
-                    Random random = new Random();
-                    int randomNumber = random.Next(1, 1001);
-
-                    await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: {costomerModel[chatId].Service}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: Ярослав, @yarius13\n \nСтатус заявки: Не підтверджена ⚠️",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-                }
-            }
-            else
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "❗ Некоректна форма введення ❗️",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-        }
-        catch (ApiRequestException apiEx) when (apiEx.ErrorCode == 403)
-        {
-            return;
-        }
-    }
-
-    static async Task OnCallbackQuery(ITelegramBotClient botClient, CallbackQuery query, CancellationToken cancellationToken)
-    {
-        var chatId = query.Message.Chat.Id;
-        if (query.Data != null)
-        {
-            if (currencies.Any(x => x.ToLower() == query.Data || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 1))))
-            {
-                for (int i = 0; i < currencies.Count; i++)
-                {
-                    if (query.Data == currencies[i].ToLower() && currencies[i] != null)
-                    {
-                        await AddCellCurrency(currencies[i]);
-                        break;
-                    }
-                    else if (query.Data == (currencies[i] + $"{i + 1}").ToLower() && (currencies[i] + $"{i + 1}") != null)
-                    {
-                        await AddGetCurrency(currencies[i]);
-                        break;
-                    }
-                }
-            }
-            else if (query.Data == "exchangeUAH")
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower()),
-                    InlineKeyboardButton.WithCallbackData(currencies[1], currencies[1].ToLower()),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[2], currencies[2].ToLower()),
-                    InlineKeyboardButton.WithCallbackData(currencies[3], currencies[3].ToLower()),
-                },
-            });
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Будь ласка, оберіть валюту яку віддаєте",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (query.Data == "exchangeUSD")
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower()),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[7], currencies[7].ToLower()),
-                    InlineKeyboardButton.WithCallbackData(currencies[8], currencies[8].ToLower()),
-                },
-            });
-
-                ifNotBankingTaken[chatId] = true;
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Будь ласка, оберіть валюту яку віддаєте",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (query.Data == "course")
-            {
-                await botClient.DeleteMessageAsync(
-                        chatId: chatId,
-                        messageId: lastMessage[chatId].MessageId,
-                        cancellationToken: cancellationToken
-                    );
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Монобанк продаж: ₴ {await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json")}\nМонобанк купівля: ₴ {await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json")}\nПриват продаж: ₴ {await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json")}\nПриват купівля: ₴ {await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json")}\nBitcoin: {await anotherCryptoService.GetBitcoinPrice()}\nEthereum: {await anotherCryptoService.GetEthereumPrice()}",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (query.Data == "howManyGet")
-            {
-                HowMuchGet[chatId] = true;
-                if (costomerModel.ContainsKey(chatId))
-                {
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
-                    new[]
-                    {
-                        InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки віддаю ➡️", "howMuchGive"),
-                    }
-                });
-
-                    if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]))
-                    {
-                        if (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[3])
-                        {
-                            var course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
-                            var min = 100 * course;
-                            var max = 20000 * course;
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: {min} UAH - {max} UAH):",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                        }
-                        else if (costomerModel[chatId].CurrencyGet == currencies[2])
-                        {
-                            var course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json");
-                            var min = 100 * course;
-                            var max = 20000 * course;
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: {min} UAH - {max} UAH):",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                        }
-                    }
-                    else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3]))
-                    {
-                        if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
-                        {
-                            var min = 100;
-                            var max = 20000;
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви отримаєте. Мінімум: {min}, Максимум: {max}",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                        }
-                        else if (costomerModel[chatId].CurrencyCell == currencies[2])
-                        {
-                            var min = 100;
-                            var max = 20000;
-                            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви отримаєте. Мінімум: {min}, Максимум: {max}",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                        }
-                    }
-                    else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8]))
-                    {
-                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви отримаєте готівки",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                    }
-                    else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8]))
-                    {
-                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                                chatId: chatId,
-                                text: $"Введіть скільки ви отримаєте криптовалюти",
-                                parseMode: ParseMode.Markdown,
-                                cancellationToken: cancellationToken
-                            );
-                    }
-                }
-            }
-            else if (query.Data == "howMuchGive")
-            {
-                ProccesHowManyGive(botClient, chatId, cancellationToken);
-            }
-            else if (query.Data == "other")
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[9], "w1"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[10], "w2"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[11], "w3"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[12], "w4"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[13], "w5"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[14], "w6"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[15], "w7"),
-                },
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(currencies[16], "w8"),
-                },
-            });
-
-                ifCheckNumber[chatId] = true;
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Інший обмін та послуги з криптовалютами🧾",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-
-                );
-            }
-            else if (query.Data == "w1" || query.Data == "w2" || query.Data == "w3" || query.Data == "w4" || query.Data == "w5" || query.Data == "w6" || query.Data == "w7")
-            {
-                if (ifCheckNumber.ContainsKey(chatId))
-                {
-                    if (!ifCheckNumber[chatId])
-                    {
-                        lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: "❗ Некоректна форма введення ❗️",
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                        );
-
+                        await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: "❗ Некоректна форма введення ❗️",
+                       parseMode: ParseMode.Markdown,
+                       cancellationToken: cancellationToken
+                       );
                         return;
                     }
-                }
-                if (costomerModel.ContainsKey(chatId))
-                {
-                    switch (query.Data)
-                    {
-                        case "w1":
-                            Check("Перестановка готівки по світу ($/€)");
-                            break;
-                        case "w2":
-                            Check("Оплата і прийом безготівки ($/€)");
-                            break;
-                        case "w3":
-                            Check("Оплата безготівки на фіз. обличчя");
-                            break;
-                        case "w4":
-                            Check("Оплата будь-яких сум на ФОП");
-                            break;
-                        case "w5":
-                            Check("Оплата юаня на карти фіз. облич");
-                            break;
-                        case "w6":
-                            Check("Обмін з електронних платіжних систем");
-                            break;
-                        case "w7":
-                            Check("Виплата на картки Європи");
-                            break;
-                    }
+
+                    costomerModel[chatId].Service = msg.Text;
 
                     if (costomerModel[chatId].Phone == null)
                     {
@@ -1288,7 +1105,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш контакт Telegram, щоб менеджер👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
                     else
@@ -1298,131 +1116,523 @@ class Program
                             new[]
                             {
                                 InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
-                            }
+                            },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
                         });
 
                         Random random = new Random();
-                        int randomNumber = random.Next(1, 1001);
+                        int randomNumber = random.Next(100, 1000);
+                        costomerModel[chatId].Id = randomNumber;
+
+                        UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                            chatId: chatId,
+                            text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                            replyMarkup: inlineKeyboard,
+                            parseMode: ParseMode.Markdown,
+                            cancellationToken: cancellationToken
+                        );
+
+                        SendToAdmin(botClient, chatId, cancellationToken);
+                    }
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: "❗ Некоректна форма введення ❗️",
+                       parseMode: ParseMode.Markdown,
+                       cancellationToken: cancellationToken
+                   );
+                }
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "❗ Некоректна форма введення ❗️",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+        }
+        catch (Exception ex)
+        {
+            await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: "❗ Некоректна форма введення ❗️",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            Console.WriteLine(ex.ToString());
+            return;
+        }
+    }
+
+    static async Task OnCallbackQuery(ITelegramBotClient botClient, CallbackQuery query, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var chatId = query.Message.Chat.Id;
+            if (query.Data != null)
+            {
+                if (currencies.Any(x => x.ToLower() == query.Data || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 1))) || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 2)))
+                {
+                    for (int i = 0; i < currencies.Count; i++)
+                    {
+                        if (query.Data == currencies[i].ToLower() && currencies[i] != null)
+                        {
+                            await AddCellCurrency(currencies[i]);
+                            break;
+                        }
+                        else if (query.Data == (currencies[i] + $"{i + 1}").ToLower() && (currencies[i] + $"{i + 1}") != null)
+                        {
+                            await AddGetCurrency(currencies[i]);
+                            break;
+                        }
+                    }
+                }
+                else if (query.Data == "exchangeUAH")
+                {
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower()),
+                            InlineKeyboardButton.WithCallbackData(currencies[1], currencies[1].ToLower()),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[2], currencies[2].ToLower()),
+                            InlineKeyboardButton.WithCallbackData(currencies[3], currencies[3].ToLower()),
+                        },
+                    });
+
+                    await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: "Оберіть, що *віддаєте* ➡️:",
+                       replyMarkup: inlineKeyboard,
+                       parseMode: ParseMode.Markdown,
+                       cancellationToken: cancellationToken
+                   );
+                }
+                else if (query.Data == "exchangeUSD")
+                {
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower()),
+                    InlineKeyboardButton.WithCallbackData(currencies[7], currencies[7].ToLower()),
+                },
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData(currencies[8], currencies[8].ToLower()),
+                    InlineKeyboardButton.WithCallbackData(currencies[17], currencies[17].ToLower()),
+                },
+            });
+
+                    ifNotBankingTaken[chatId] = true;
+
+                    await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: "Оберіть, що *віддаєте* ➡️:",
+                       replyMarkup: inlineKeyboard,
+                       parseMode: ParseMode.Markdown,
+                       cancellationToken: cancellationToken
+                   );
+                }
+                else if (query.Data == "YesOrder" || query.Data == "NoOrder")
+                {
+                    if (query.Data == "NoOrder")
+                    {
+                        ifTRC20Taken[chatId] = true;
+
+                        if (costomerModel[chatId].CurrencyCell == currencies[0])
+                        {
+                            if (costomerModel[chatId].CurrencyGet == currencies[1])
+                            {
+                                ProcessGetValue(botClient, chatId, cancellationToken, 1);
+                            }
+                            else if (costomerModel[chatId].CurrencyGet == currencies[2])
+                            {
+                                ProcessGetValue(botClient, chatId, cancellationToken, 2);
+                            }
+                            else if (costomerModel[chatId].CurrencyGet == currencies[3])
+                            {
+                                ProcessGetValue(botClient, chatId, cancellationToken, 3);
+                            }
+                            else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])
+                            {
+                                ProcessGetValue(botClient, chatId, cancellationToken, 8);
+                            }
+                        }
+                        else
+                        {
+                            ProcessGetValue(botClient, chatId, cancellationToken, 0);
+                        }
+                    }
+                    else
+                    {
+                        costomerModel[chatId].Order = true;
+
+                        if (costomerModel[chatId].Phone == null)
+                        {
+                            var keyboard = new ReplyKeyboardMarkup(new[]
+                            {
+                            new[]
+                            {
+                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
+                            }
+                        })
+                            {
+                                OneTimeKeyboard = true,
+                                ResizeKeyboard = true
+                            };
+
+                            await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                                parseMode: ParseMode.Markdown,
+                                replyMarkup: keyboard);
+                        }
+                        else
+                        {
+                            ProccesHowManyGive(botClient, chatId, cancellationToken);
+                        }
+                    }
+                }
+                else if (query.Data == "howManyGet")
+                {
+                    HowMuchGet[chatId] = true;
+                    if (costomerModel.ContainsKey(chatId))
+                    {
+                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                        {
+                            new[]
+                            {
+                                InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки віддаю ➡️", "howMuchGive"),
+                            }
+                        });
+
+                        if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]))
+                        {
+                            var course = costomerModel[chatId].Course;
+                            var min = 100 * course;
+                            var max = 20000 * course;
+                            await botClient.SendTextMessageAsync(
+                               chatId: chatId,
+                               text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} UAH* - *{max} UAH*):",
+                               parseMode: ParseMode.Markdown,
+                               replyMarkup: inlineKeyboard,
+                               cancellationToken: cancellationToken
+                           );
+                        }
+                        else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3]))
+                        {
+                            var min = 100;
+                            var max = 20000;
+                            await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} USDT* - *{max} USDT*):",
+                                replyMarkup: inlineKeyboard,
+                                parseMode: ParseMode.Markdown,
+                                cancellationToken: cancellationToken
+                            );
+                        }
+                        else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]))
+                        {
+                            string valute = costomerModel[chatId].CurrencyGet == currencies[7] ? "USD" : "EUR";
+                            if (costomerModel[chatId].CurrencyGet == currencies[17]) valute = "UAH";
+                            var min = costomerModel[chatId].CurrencyGet == currencies[17] ? 20000 : 500;
+                            var max = costomerModel[chatId].CurrencyGet == currencies[17] ? 4000000 : 100000;
+                            await botClient.SendTextMessageAsync(
+                                    chatId: chatId,
+                                    text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} {valute}* - *{max} {valute}*):",
+                                    replyMarkup: inlineKeyboard,
+                                    parseMode: ParseMode.Markdown,
+                                    cancellationToken: cancellationToken
+                                );
+                        }
+                        else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17]))
+                        {
+                            await botClient.SendTextMessageAsync(
+                                    chatId: chatId,
+                                    text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *500 USDT* - *100000 USDT*):",
+                                    parseMode: ParseMode.Markdown,
+                                    replyMarkup: inlineKeyboard,
+                                    cancellationToken: cancellationToken
+                                );
+                        }
+                    }
+                }
+                else if (query.Data == "howMuchGive")
+                {
+                    HowMuchGet[chatId] = false;
+                    ProccesHowManyGive(botClient, chatId, cancellationToken);
+                }
+                else if (query.Data == "other")
+                {
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[9], "w1"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[10], "w2"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[11], "w3"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[12], "w4"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[13], "w5"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[14], "w6"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[15], "w7"),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(currencies[16], "w8"),
+                        },
+                    });
+
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"Інший обмін та послуги з криптовалютами🧾",
+                        replyMarkup: inlineKeyboard,
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+
+                    );
+                }
+                else if (query.Data == "w1" || query.Data == "w2" || query.Data == "w3" || query.Data == "w4" || query.Data == "w5" || query.Data == "w6" || query.Data == "w7")
+                {
+                    if (costomerModel.ContainsKey(chatId))
+                    {
+                        switch (query.Data)
+                        {
+                            case "w1":
+                                Check(currencies[9]);
+                                break;
+                            case "w2":
+                                Check(currencies[10]);
+                                break;
+                            case "w3":
+                                Check(currencies[11]);
+                                break;
+                            case "w4":
+                                Check(currencies[12]);
+                                break;
+                            case "w5":
+                                Check(currencies[13]);
+                                break;
+                            case "w6":
+                                Check(currencies[14]);
+                                break;
+                            case "w7":
+                                Check(currencies[15]);
+                                break;
+                        }
+
+                        if (costomerModel[chatId].Phone == null)
+                        {
+                            var keyboard = new ReplyKeyboardMarkup(new[]
+                            {
+                            new[]
+                            {
+                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
+                            }
+                        })
+                            {
+                                OneTimeKeyboard = true,
+                                ResizeKeyboard = true
+                            };
+
+                            insheService[chatId] = true;
+
+                            await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                                parseMode: ParseMode.Markdown,
+                                replyMarkup: keyboard);
+                        }
+                        else
+                        {
+                            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                            {
+                                new[]
+                                {
+                                    InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                                },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                            });
+
+                            Random random = new Random();
+                            int randomNumber = random.Next(100, 1000);
+                            costomerModel[chatId].Id = randomNumber;
+
+                            UserMessage[chatId] = await botClient.SendTextMessageAsync(
+                                chatId: chatId,
+                                text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                replyMarkup: inlineKeyboard,
+                                parseMode: ParseMode.Markdown,
+                                cancellationToken: cancellationToken
+                            );
+                            SendToAdmin(botClient, chatId, cancellationToken);
+                        }
+                    }
+                }
+                else if (query.Data == "accses")
+                {
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: "<b>Заявку підтверджено</b> ✅\nЧерез декілька хвилин з вами зв'яжеться <b>менеджер</b> для здійснення угоди.\n\n<i>Графік роботи: Пн-Нд, 09:00 - 22:00</i> 📆\n\n<b>Дякуємо за довіру</b> ❤️",
+                        parseMode: ParseMode.Html,
+                        cancellationToken: cancellationToken
+                    );
+                    await ChangeAgminMessage(botClient, chatId, cancellationToken, true);
+                    await ChangeUserMessage(botClient, chatId, cancellationToken, true);
+                    await ZeroVariables(botClient, chatId, cancellationToken);
+                }
+                else if (query.Data == "disable")
+                {
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: "*Меню* 🔁:",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+
+                    ChangeAgminMessage(botClient, chatId, cancellationToken, false);
+                    ChangeUserMessage(botClient, chatId, cancellationToken, false);
+                    ZeroVariables(botClient, chatId, cancellationToken);
+                }
+                else if (query.Data == "w8")
+                {
+                    inshe[chatId] = true;
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: "Опишіть *детально* ваше завдання або обмін, які хочете здійснити. Вкажіть більше інформації та суму для того, щоб ми могли вам допомогти (ліміт: *500 символів*)📝",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: "❗ Incorrect command ❗",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+                }
+            }
+
+            async Task Check(string op)
+            {
+                if (!costomerModel.ContainsKey(chatId))
+                {
+                    costomerModel.Add(chatId, new CostomerModel() { Service = op });
+                }
+                else
+                {
+                    costomerModel[chatId].Service = op;
+                }
+
+                var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                {
+                    new[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                    },
+                                        new[]
+                                        {
+                                            InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
+                                        }
+                });
+            }
+
+            async Task AddCellCurrency(string currency)
+            {
+                if (ifNotBankingTaken[chatId] == true)
+                {
+                    if (currency == currencies[0])
+                    {
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
+
+                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                        {
+                            new[]
+                            {
+                                InlineKeyboardButton.WithCallbackData(currencies[7], currencies[7].ToLower() + "8"),
+                                InlineKeyboardButton.WithCallbackData(currencies[8], currencies[8].ToLower() + "9")
+                            },
+                            new[]
+                            {
+                                InlineKeyboardButton.WithCallbackData(currencies[17], currencies[17].ToLower() + "18")
+                            }
+                        });
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: {costomerModel[chatId].Service}\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: Ярослав, @yarius13\n \nСтатус заявки: Не підтверджена ⚠️",
+                            text: $"Віддаєте: *{currency}*. Оберіть, що *отримаєте* ⬅️:",
                             replyMarkup: inlineKeyboard,
                             parseMode: ParseMode.Markdown,
                             cancellationToken: cancellationToken
                         );
                     }
-                }
-            }
-            else if (query.Data == "accses")
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Заявку підтверджено ✅ Через декілька хвилин з вами зв'яжеться менеджер👨🏻‍💻 для здійснення угоди. Дякуємо за довіру ❤️",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (query.Data == "w8")
-            {
-                inshe[chatId] = true;
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Опишіть детально ваше завдання або обмін, які хочете здійснити. Вкажіть більше інформації та суму для того, щоб ми могли вам допомогти 📝\n(Ліміт - 500 символів)",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "❗ Incorrect command ❗",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-        }
-
-        async Task Check(string op)
-        {
-            if (!costomerModel.ContainsKey(chatId))
-            {
-                costomerModel.Add(chatId, new CostomerModel() { Service = op });
-            }
-            else
-            {
-                costomerModel[chatId].Service = op;
-            }
-
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                new[]
-                {
-                    InlineKeyboardButton.WithCallbackData("Підтверджую", "accses"),
-                }
-            });
-        }
-
-        async Task AddCellCurrency(string currency)
-        {
-            if (ifNotBankingTaken[chatId] == true)
-            {
-                if (currency == currencies[0])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
+                    else if (currency == currencies[1] || currency == currencies[2] || currency == currencies[3])
                     {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
+
+                        await AddGetCurrency(currencies[0]);
                     }
-                    else
+                    else if (currency == currencies[4])
                     {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
-
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
-                            new[]
-                            {
-                                InlineKeyboardButton.WithCallbackData(currencies[7], currencies[7].ToLower() + "8"),
-                                InlineKeyboardButton.WithCallbackData(currencies[8], currencies[8].ToLower() + "9")
-                            }
-                        });
-
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"Віддаєте {currency}. Оберіть валюту яку отримаєте",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-                }
-                else if (currency == currencies[1] || currency == currencies[2] || currency == currencies[3])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
-                    }
-                    else
-                    {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
-
-                    await AddGetCurrency(currencies[0]);
-                }
-                else if (currency == currencies[4])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
-                    }
-                    else
-                    {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
 
 
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
+                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                        {
                     new[]
                     {
                         InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower() + "1")
@@ -1433,42 +1643,42 @@ class Program
                     },
                 });
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: "Будь ласка, оберіть валюту яку отримаєте",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-                }
-                else if (currency == currencies[7] || currency == currencies[8])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        await botClient.SendTextMessageAsync(
+                            chatId: chatId,
+                            text: "Будь ласка, оберіть валюту яку отримаєте",
+                            replyMarkup: inlineKeyboard,
+                            parseMode: ParseMode.Markdown,
+                            cancellationToken: cancellationToken
+                        );
                     }
-                    else
+                    else if (currency == currencies[7] || currency == currencies[8] || currency == currencies[17])
                     {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
 
-                    await AddGetCurrency(currencies[0]);
+                        await AddGetCurrency(currencies[0]);
+                    }
                 }
-            }
-            else
-            {
-                if (currency == currencies[0])
+                else
                 {
-                    if (!costomerModel.ContainsKey(chatId))
+                    if (currency == currencies[0])
                     {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
-                    }
-                    else
-                    {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
+                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                        {
                     new[]
                     {
                         InlineKeyboardButton.WithCallbackData(currencies[1], currencies[1].ToLower() + "2"),
@@ -1480,41 +1690,41 @@ class Program
                     },
                 });
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"Віддаєте {currency}. Оберіть валюту яку отримаєте",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-                }
-                else if (currency == currencies[1] || currency == currencies[2] || currency == currencies[3])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        await botClient.SendTextMessageAsync(
+                            chatId: chatId,
+                            text: $"Віддаєте: *{currency}*. Оберіть, що *отримаєте* ⬅️:",
+                            replyMarkup: inlineKeyboard,
+                            parseMode: ParseMode.Markdown,
+                            cancellationToken: cancellationToken
+                        );
                     }
-                    else
+                    else if (currency == currencies[1] || currency == currencies[2] || currency == currencies[3])
                     {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
 
-                    await AddGetCurrency(currencies[0]);
-                }
-                else if (currency == currencies[4])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        await AddGetCurrency(currencies[0]);
                     }
-                    else
+                    else if (currency == currencies[4])
                     {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
 
 
-                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                    {
+                        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                        {
                     new[]
                     {
                         InlineKeyboardButton.WithCallbackData(currencies[0], currencies[0].ToLower() + "1")
@@ -1525,64 +1735,75 @@ class Program
                     },
                 });
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: "Будь ласка, оберіть валюту яку отримаєте",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-                }
-                else if (currency == currencies[7] || currency == currencies[8])
-                {
-                    if (!costomerModel.ContainsKey(chatId))
-                    {
-                        costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        await botClient.SendTextMessageAsync(
+                            chatId: chatId,
+                            text: "Будь ласка, оберіть валюту яку отримаєте",
+                            replyMarkup: inlineKeyboard,
+                            parseMode: ParseMode.Markdown,
+                            cancellationToken: cancellationToken
+                        );
                     }
-                    else
+                    else if (currency == currencies[7] || currency == currencies[8])
                     {
-                        costomerModel[chatId].CurrencyCell = currency;
-                    }
+                        if (!costomerModel.ContainsKey(chatId))
+                        {
+                            costomerModel.Add(chatId, new CostomerModel() { CurrencyCell = currency });
+                        }
+                        else
+                        {
+                            costomerModel[chatId].CurrencyCell = currency;
+                        }
 
-                    await AddGetCurrency(currencies[0]);
+                        await AddGetCurrency(currencies[0]);
+                    }
                 }
+
             }
-
-        }
-        async Task AddGetCurrency(string currency)
-        {
-            costomerModel[chatId].CurrencyGet = currency;
-
-            if (costomerModel[chatId].CurrencyCell == currencies[0])
+            async Task AddGetCurrency(string currency)
             {
-                if (costomerModel[chatId].CurrencyGet == currencies[1])
+                costomerModel[chatId].CurrencyGet = currency;
+
+                if (costomerModel[chatId].CurrencyCell == currencies[0])
                 {
-                    ProcessGetValue(botClient, chatId, cancellationToken, 1);
+                    if (costomerModel[chatId].CurrencyGet == currencies[1])
+                    {
+                        ProcessOrder(botClient, chatId, cancellationToken, 1);
+                    }
+                    else if (costomerModel[chatId].CurrencyGet == currencies[2])
+                    {
+                        ProcessOrder(botClient, chatId, cancellationToken, 2);
+                    }
+                    else if (costomerModel[chatId].CurrencyGet == currencies[3])
+                    {
+                        ProcessOrder(botClient, chatId, cancellationToken, 3);
+                    }
+                    else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])
+                    {
+                        ProcessGetValue(botClient, chatId, cancellationToken, 8);
+                    }
                 }
-                else if (costomerModel[chatId].CurrencyGet == currencies[2])
+                else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])
                 {
-                    ProcessGetValue(botClient, chatId, cancellationToken, 2);
+                    ProcessOrder(botClient, chatId, cancellationToken, 0);
                 }
-                else if (costomerModel[chatId].CurrencyGet == currencies[3])
-                {
-                    ProcessGetValue(botClient, chatId, cancellationToken, 3);
-                }
-                else if (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8])
+                else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])
                 {
                     ProcessGetValue(botClient, chatId, cancellationToken, 8);
                 }
-            }
-            else
-            {
-                ProcessGetValue(botClient, chatId, cancellationToken, 0);
-            }
 
-            // lastMessage[chatId] = await botClient.SendTextMessageAsync(
-            //     chatId: chatId,
-            //     text: $"Введіть суму яку віддаєте",
-            //     parseMode: ParseMode.Markdown,
-            //     cancellationToken: cancellationToken
-            // );
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            var chatId = query.Message.Chat.Id;
+            await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗ Некоректна форма введення ❗️",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+            Console.WriteLine(ex.ToString());
             return;
         }
     }
@@ -1600,6 +1821,118 @@ class Program
         Console.WriteLine(ErrorMessage);
         return Task.CompletedTask;
     }
+    static async Task ProcessOrder(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, int bank)
+    {
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("Так, через ордер", "YesOrder"),
+                            InlineKeyboardButton.WithCallbackData("Ні, без ордера", "NoOrder"),
+                        }
+                    });
+
+        if (costomerModel[chatId].CurrencyCell == currencies[0])
+        {
+            switch (bank)
+            {
+                case 1:
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+
+                    await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    replyMarkup: inlineKeyboard,
+                    parseMode: ParseMode.Markdown);
+
+                    break;
+                case 2:
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json");
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+
+                    await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    replyMarkup: inlineKeyboard,
+                    parseMode: ParseMode.Markdown);
+
+                    break;
+                case 3:
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+
+                    await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    replyMarkup: inlineKeyboard,
+                    parseMode: ParseMode.Markdown);
+
+                    break;
+                case 8:
+
+                    await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *500 USDT* - *100000 USDT*):",
+                        replyMarkup: inlineKeyboard,
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
+                    break;
+            }
+        }
+        else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])
+        {
+            if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
+            {
+                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json");
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    replyMarkup: inlineKeyboard,
+                    parseMode: ParseMode.Markdown);
+
+            }
+            else if (costomerModel[chatId].CurrencyCell == currencies[2])
+            {
+                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json");
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    replyMarkup: inlineKeyboard,
+                    parseMode: ParseMode.Markdown);
+            }
+        }
+    }
     static async Task ProcessGetValue(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, int bank)
     {
         if (costomerModel[chatId].CurrencyCell == currencies[0])
@@ -1608,13 +1941,6 @@ class Program
             {
                 case 1:
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"➡️ Віддаєте *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: 1 : {await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json")}",
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
-
                     if (!ifCheckNumber.ContainsKey(chatId))
                     {
                         ifCheckNumber.Add(chatId, true);
@@ -1624,24 +1950,12 @@ class Program
                         ifCheckNumber[chatId] = true;
                     }
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                    await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Введіть номер карти 💳, куди бажаєте отримати кошти (16 цифр). Наприклад: <i>1111333311113333</i>",
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111333311113333.</i>",
                     parseMode: ParseMode.Html);
                     break;
                 case 2:
-                    // if (HowMuchGivesNow[chatId] < 100 || HowMuchGivesNow[chatId] > 20000)
-                    // {
-                    //     await printExeptionValue1(botClient, chatId, cancellationToken);
-                    //     return;
-                    // }
-
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"Віддаєте {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nТеперішній курс 1:{await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json")}",
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
 
                     if (!ifCheckNumber.ContainsKey(chatId))
                     {
@@ -1652,23 +1966,12 @@ class Program
                         ifCheckNumber[chatId] = true;
                     }
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                    await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Будь ласка, введіть свій номер карти(16 цифр).\nПриклад: 0000 0000 0000 0000");
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111333311113333.</i>",
+                    parseMode: ParseMode.Html);
                     break;
                 case 3:
-                    // if (HowMuchGivesNow[chatId] < 100 || HowMuchGivesNow[chatId] > 20000)
-                    // {
-                    //     await printExeptionValue1(botClient, chatId, cancellationToken);
-                    //     return;
-                    // }
-
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"Віддаєте {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nТеперішній курс 1:{await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json")}",
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
 
                     if (!ifCheckNumber.ContainsKey(chatId))
                     {
@@ -1679,9 +1982,10 @@ class Program
                         ifCheckNumber[chatId] = true;
                     }
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                    await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Будь ласка, введіть свій номер карти(16 цифр).\nПриклад: 0000 0000 0000 0000");
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111333311113333.</i>",
+                    parseMode: ParseMode.Html);
                     break;
                 case 8:
                     var inlineKeyboard = new InlineKeyboardMarkup(new[]
@@ -1692,83 +1996,48 @@ class Program
                                 }
                             });
 
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                        chatId: chatId,
-                        text: $"Введіть суму Tether, USDT, яку віддаєте ➡️ (ліміт: 500 USDT - 100000 USDT):",
-                        replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
-                        cancellationToken: cancellationToken
-                    );
+                    await botClient.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *500 USDT* - *100000 USDT*):",
+                       replyMarkup: inlineKeyboard,
+                       parseMode: ParseMode.Markdown,
+                       cancellationToken: cancellationToken
+                   );
                     break;
             }
         }
-        else if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])
-        {
-            // if (HowMuchGivesNow[chatId] < 4000 || HowMuchGivesNow[chatId] > 900000)
-            // {
-            //     await printExeptionValue2(botClient, chatId, cancellationToken);
-            //     return;
-            // }
-            ifTRC20Taken[chatId] = true;
-
-            if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Віддаєте {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nТеперішній курс 1:{await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json")}",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Вкажіть адресу гаманця TRC20, куди бажаєте отримати кошти");
-            }
-            else if (costomerModel[chatId].CurrencyCell == currencies[2])
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Віддаєте {costomerModel[chatId].CurrencyCell}\nОтримуєте: {costomerModel[chatId].CurrencyGet}\nТеперішній курс 1:{await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json")}",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Вкажіть адресу гаманця TRC20, куди бажаєте отримати кошти");
-            }
-        }
-        else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
+        else
         {
             ifTRC20Taken[chatId] = true;
 
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Вкажіть адресу гаманця TRC20, куди бажаєте отримати кошти");
+                text: "Введіть <b>адресу гаманця TRC20</b> 💸, куди бажаєте отримати кошти. <i>Наприклад: TNsQfs521...</i>",
+                parseMode: ParseMode.Html
+            );
         }
-
 
         async Task printExeptionValue1(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
         {
 
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Мінімальна сума = 100 одиниць\nМаксимальна сума = 20000 одиниць",
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
+            await botClient.SendTextMessageAsync(
+               chatId: chatId,
+               text: $"Мінімальна сума = 100 одиниць\nМаксимальна сума = 20000 одиниць",
+               parseMode: ParseMode.Markdown,
+               cancellationToken: cancellationToken
+           );
             return;
         }
 
         async Task printExeptionValue2(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
         {
 
-            lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Мінімальна сума = 4000 гривень\nМаксимальна сума = 900000 гривень",
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
+            await botClient.SendTextMessageAsync(
+               chatId: chatId,
+               text: $"Мінімальна сума = 4000 гривень\nМаксимальна сума = 900000 гривень",
+               parseMode: ParseMode.Markdown,
+               cancellationToken: cancellationToken
+           );
             return;
         }
     }
@@ -1777,96 +2046,396 @@ class Program
     {
         if (costomerModel.ContainsKey(chatId))
         {
-            int min = 0;
-            int max = 0;
+            decimal min = 0;
+            decimal max = 0;
             if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]))
             {
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
-                    new[]
-                    {
-                        InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
-                    }
-                });
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
+                }
+            });
 
                 min = 100;
                 max = 20000;
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Введіть суму Tether, USDT, яку віддаєте ➡️ (ліміт: {min} USDT - {max} USDT):",
-                    replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *{min} USDT* - *{max} USDT*):",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
             }
             else if (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3]))
             {
-                min = 4000;
-                max = 900000;
+                decimal course = costomerModel[chatId].Course;
 
+                min = 100 * course;
+                max = 20000 * course;
+
+                var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                {
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
+                }
+            });
+
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"Введіть суму *{costomerModel[chatId].CurrencyCell}*, яку віддаєте ➡️ (ліміт: *{min} UAH* - *{max} UAH*):",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+            else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]))
+            {
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"Зазначне суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: 500 USDT - 100000 USDT):",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+            else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])
+            {
+                var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                            {
+                                new[]
+                                {
+                                    InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
+                                }
+                            });
+
+                string valute = costomerModel[chatId].CurrencyCell == currencies[7] ? "USD" : "EUR";
+                if (costomerModel[chatId].CurrencyCell == currencies[17]) valute = "UAH";
+                min = costomerModel[chatId].CurrencyCell == currencies[17] ? 20000 : 500;
+                max = costomerModel[chatId].CurrencyCell == currencies[17] ? 4000000 : 100000;
+
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"Зазначне суму {costomerModel[chatId].CurrencyCell}, яку віддаєте ➡️ (ліміт: *{min} {valute} - {max} {valute}*):",
+                   replyMarkup: inlineKeyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+            else if (insheService.ContainsKey(chatId) && insheService[chatId] == true)
+            {
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
                     new[]
                     {
-                        InlineKeyboardButton.WithCallbackData("Я хочу вказати, скільки отримаю ⬅️", "howManyGet"),
+                        InlineKeyboardButton.WithCallbackData("Підтвердити заявку ✅", "accses"),
+                    },
+                    new[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Скасувати ❌", "disable"),
                     }
                 });
 
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
+                Random random = new Random();
+                int randomNumber = random.Next(101, 1000);
+                costomerModel[chatId].Id = randomNumber;
+
+                UserMessage[chatId] = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"Введіть скільки ви віддаєте. Мінімум: {min}, Максимум: {max}",
+                    text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
                     replyMarkup: inlineKeyboard,
                     parseMode: ParseMode.Markdown,
                     cancellationToken: cancellationToken
                 );
-            }
-            else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8]))
-            {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Зазначне суму USDT, яку віддаєте",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-            }
-            else if (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8])
-            {
-                if (costomerModel[chatId].CurrencyCell == currencies[7])
-                {
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Зазначне суму {currencies[7]}, яку віддаєте",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-                }
-                else if (costomerModel[chatId].CurrencyCell == currencies[8])
-                {
-                    lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Зазначне суму {currencies[8]}, яку віддаєте",
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: cancellationToken
-                );
-                }
+                SendToAdmin(botClient, chatId, cancellationToken);
             }
             else
             {
-                lastMessage[chatId] = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"З вмами скоро зв'яжеться адміністратор",
+                await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"З вмами скоро зв'яжеться адміністратор",
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+            }
+        }
+    }
+
+    static async Task ZeroVariables(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
+    {
+        inshe[chatId] = false;
+        insheService[chatId] = false;
+        ifCheckNumber[chatId] = false;
+        HowMuchGet[chatId] = false;
+        ifInshaHotivkaTaken[chatId] = false;
+        ifNotBankingTaken[chatId] = false;
+        ifTRC20Taken[chatId] = false;
+        if (costomerModel.ContainsKey(chatId))
+        {
+            costomerModel[chatId].Order = false;
+            costomerModel[chatId].Service = null;
+            costomerModel[chatId].CurrencyGet = null;
+            costomerModel[chatId].CardNumber = null;
+            costomerModel[chatId].CurrencyCell = null;
+            costomerModel[chatId].Course = 0;
+            costomerModel[chatId].HowMuchGives = 0;
+            costomerModel[chatId].HowMuchGet = 0;
+            costomerModel[chatId].IfEnd = true;
+        }
+        else
+        {
+            costomerModel.Add(chatId, new CostomerModel
+            {
+                Order = false,
+                Service = null,
+                CurrencyGet = null,
+                CardNumber = null,
+                CurrencyCell = null,
+                Course = 0,
+                HowMuchGives = 0,
+                HowMuchGet = 0,
+                IfEnd = true
+            });
+        }
+    }
+    static async Task SendToAdmin(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
+    {
+        costomerModel[chatId].IfEnd = false;
+        if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
+        {
+            var order = costomerModel[chatId].Order ? "Так" : "Ні";
+            AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
+                chatId: adminChatId,
+                text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: Ні",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken
+            );
+        }
+        else if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
+        {
+            AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
+                chatId: adminChatId,
+                text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: Ні",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken
+            );
+        }
+        else
+        {
+            AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
+                chatId: adminChatId,
+                text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: Ні",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken
+            );
+        }
+    }
+
+    static async Task ChangeAgminMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, bool ifAccess)
+    {
+        if (ifAccess)
+        {
+            if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
+            {
+                var order = costomerModel[chatId].Order ? "Так" : "Ні";
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: *Так*",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: *Так*",
                     parseMode: ParseMode.Markdown,
                     cancellationToken: cancellationToken
                 );
             }
+            else
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: *Так*",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+            }
+        }
+        else
+        {
+            if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
+            {
+                var order = costomerModel[chatId].Order ? "Так" : "Ні";
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\n*Скасована* ❌",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \n*Скасована* ❌",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+            }
+            else
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: adminChatId,
+                    messageId: AdminMessage[adminChatId].MessageId,
+                    text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \n*Скасована* ❌",
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken
+                );
+            }
+        }
+    }
+    static async Task ChangeUserMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, bool ifAccess)
+    {
+        if (ifAccess)
+        {
+            var order = costomerModel[chatId].Order ? "Так, через ордер" : "Ні, без ордера";
+            if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
+            {
+                var sendValute = costomerModel[chatId].CurrencyCell == currencies[0] ? "USDT" : "UAH";
+                var getCurr = costomerModel[chatId].CurrencyGet == currencies[0] ? "USDT" : "UAH";
+                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                if (costomerModel[chatId].CurrencyGet == currencies[0])
+                {
+                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                }
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} {sendValute}*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {getCurr}*\n \n🔐 P2P-ордер: *{order}* {card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Підтверджена* ✅",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
+            {
+                string valute = "";
+                var getOrGive = HowMuchGet[chatId] == true ? "💰 Сума, яку отримаєте:" : "💰Сума, яку віддаєте:";
+                if (HowMuchGet[chatId] == true)
+                {
+                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                    {
+                        valute = costomerModel[chatId].CurrencyGet == currencies[7] ? "USD" : "EUR";
+                        if (costomerModel[chatId].CurrencyGet == currencies[17]) valute = "UAH";
+
+                    }
+                    else
+                    {
+                        valute = "USDT";
+                    }
+                }
+                else
+                {
+                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                    {
+                        valute = "USDT";
+                    }
+                    else
+                    {
+                        valute = costomerModel[chatId].CurrencyCell == currencies[7] ? "USD" : "EUR";
+                        if (costomerModel[chatId].CurrencyCell == currencies[17]) valute = "UAH";
+                    }
+                }
 
 
-            // await botClient.SendTextMessageAsync(
-            //     chatId: adminChatId,
-            //     text: $"Нова заявка!\n Ім'я: {costomerModel[chatId].FirstName}\n Фамілія: {costomerModel[chatId].LastName}\n Номер телефону: {costomerModel[chatId].Phone}\n Яку валюту віддає: {costomerModel[chatId].CurrencyCell} \n Скільки віддає: {costomerModel[chatId].HowMuchGives} \n Яку валюту отримує: {costomerModel[chatId].CurrencyGet} \n Номер карти: {costomerModel[chatId].CardNumber}",
-            //     parseMode: ParseMode.Markdown,
-            //     cancellationToken: cancellationToken
-            // );
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} *{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Підтверджена* ✅",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if (costomerModel[chatId].Service != null)
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Підтверджена* ✅",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+        }
+        else
+        {
+            var order = costomerModel[chatId].Order ? "Так, через ордер" : "Ні, без ордера";
+            if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
+            {
+                var sendValute = costomerModel[chatId].CurrencyCell == currencies[0] ? "USDT" : "UAH";
+                var getCurr = costomerModel[chatId].CurrencyGet == currencies[0] ? "USDT" : "UAH";
+                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                if (costomerModel[chatId].CurrencyGet == currencies[0])
+                {
+                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                }
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} {sendValute}*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {getCurr}*\n \n🔐 P2P-ордер: *{order}* {card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Скасована* ❌",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
+            {
+                string valute = "";
+                var getOrGive = HowMuchGet[chatId] == true ? "💰 Сума, яку отримаєте:" : "💰Сума, яку віддаєте:";
+                if (HowMuchGet[chatId] == true)
+                {
+                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                    {
+                        valute = costomerModel[chatId].CurrencyGet == currencies[7] ? "USD" : "EUR";
+                        if (costomerModel[chatId].CurrencyGet == currencies[17]) valute = "UAH";
+
+                    }
+                    else
+                    {
+                        valute = "USDT";
+                    }
+                }
+                else
+                {
+                    if (costomerModel[chatId].CurrencyCell == currencies[0])
+                    {
+                        valute = "USDT";
+                    }
+                    else
+                    {
+                        valute = costomerModel[chatId].CurrencyCell == currencies[7] ? "USD" : "EUR";
+                        if (costomerModel[chatId].CurrencyCell == currencies[17]) valute = "UAH";
+                    }
+                }
+
+
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} *{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Скасована* ❌",
+                    parseMode: ParseMode.Markdown
+                );
+            }
+            else if (costomerModel[chatId].Service != null)
+            {
+                await botClient.EditMessageTextAsync(
+                    chatId: chatId,
+                    messageId: UserMessage[chatId].MessageId,
+                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Скасована* ❌",
+                    parseMode: ParseMode.Markdown
+                );
+            }
         }
     }
 }

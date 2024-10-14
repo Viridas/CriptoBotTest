@@ -2,7 +2,7 @@
     "fiat": "UAH",
     "page": 1,
     "rows": 10,
-    "tradeType": "BUY",
+    "tradeType": "SELL",
     "asset": "USDT",
     "countries": [],
     "proMerchantAds": false,

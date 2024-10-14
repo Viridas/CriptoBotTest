@@ -50,8 +50,9 @@ class Program
         currencies.Add("Інше (обмін BTC, GBP, індивідуальне завдання і т.п.)");
         currencies.Add("Гривня, UAH");
 
+        var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient("7360889953:AAE5IDHDjW7ctNcpxLm0q2Bj9qdPU8T1QBs");
+        var bot = new TelegramBotClient(apiToken);
 
         var me = await bot.GetMeAsync();
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");

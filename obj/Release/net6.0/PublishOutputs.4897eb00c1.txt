@@ -1,0 +1,10 @@
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\CryptoBot.exe
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\CryptoBot.dll
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\CryptoBot.deps.json
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\CryptoBot.runtimeconfig.json
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\CryptoBot.pdb
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\Common.dll
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\Spot.dll
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\HtmlAgilityPack.dll
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\Newtonsoft.Json.dll
+D:\Progects\CryptoBot\CryptoBot\bin\Release\net6.0\publish\Telegram.Bot.dll

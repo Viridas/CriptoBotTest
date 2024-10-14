@@ -1,1 +1,1 @@
-worker: ./heroku_output/CryptoBot.dll
+worker: ./bin/Release/net6.0/CryptoBot.dll

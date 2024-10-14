@@ -50,21 +50,21 @@ namespace CryptoBot.Services
 
             return await CountArithmeticMean(prices[0], prices[1], prices[2], prices[3], prices[4]);
         }
-        public async Task<decimal> CountRightProcentPriceAsync(string buyPath, string sellPath)
+        public async Task<decimal> CountRightProcentPriceAsync(string buyPath, string sellPath, decimal proz)
         {
             var buyArithmeticMean = await GetCryptoPriceAsync(buyPath);
             var monoRate = await GetCryptoPriceAsync(sellPath);
             var price = buyArithmeticMean > monoRate ? buyArithmeticMean : monoRate;
-            var sellArithmeticMean = ((price / 100) * 1.5m) + monoRate;
+            var sellArithmeticMean = ((price / 100) * proz) + monoRate;
             return Math.Truncate(sellArithmeticMean * 100) / 100;
         }
 
-        public async Task<decimal> CountLeftProcentPriceAsync(string buyPath, string sellPath)
+        public async Task<decimal> CountLeftProcentPriceAsync(string buyPath, string sellPath, decimal proz)
         {
             var buyArithmeticMean = await GetCryptoPriceAsync(buyPath);
             var rate = await GetCryptoPriceAsync(sellPath);
             var price = buyArithmeticMean > rate ? rate : buyArithmeticMean;
-            var sellArithmeticMean = price - ((price / 100) * 1.5m);
+            var sellArithmeticMean = price - ((price / 100) * proz);
 
             return Math.Truncate(sellArithmeticMean * 100) / 100;
         }

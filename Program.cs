@@ -11,6 +11,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 class Program
 {
     private static Dictionary<long, Telegram.Bot.Types.Message> lastMessage = new Dictionary<long, Telegram.Bot.Types.Message>();
+    private static decimal MonoPercentage = 1.5m;
+    private static decimal PryvatPercentage = 1.5m;
+    private static decimal InshePercentage = 1.7m;
     private static List<string> currencies = new List<string>();
     private static Dictionary<long, CostomerModel> costomerModel = new Dictionary<long, CostomerModel>();
     private static Dictionary<long, bool> HowMuchGet = new Dictionary<long, bool>();
@@ -69,29 +72,39 @@ class Program
 
     static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        if (update.Type == UpdateType.Message && update.Message!.Text != null)
+        try
         {
-            await OnMessage(botClient, update.Message, cancellationToken);
+            if (update.Type == UpdateType.Message && update.Message!.Text != null)
+            {
+                await OnMessage(botClient, update.Message, cancellationToken);
+            }
+            else if (update.Type == UpdateType.CallbackQuery && update.CallbackQuery != null)
+            {
+                await OnCallbackQuery(botClient, update.CallbackQuery, cancellationToken);
+            }
+            else if (update.Message != null && update.Message.Contact != null)
+            {
+                OnAddNumber(botClient, update, cancellationToken);
+            }
         }
-        else if (update.Type == UpdateType.CallbackQuery && update.CallbackQuery != null)
+        catch (Exception ex)
         {
-            await OnCallbackQuery(botClient, update.CallbackQuery, cancellationToken);
-        }
-        else if (update.Message != null && update.Message.Contact != null)
-        {
-            OnAddNumber(botClient, update, cancellationToken);
+            Console.WriteLine($"Невідома помилка: {ex.Message}");
+            return;
         }
     }
 
     static async Task OnAddNumber(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        var chatId = update.Message.Chat.Id;
-        costomerModel[chatId].Phone = update.Message.Contact.PhoneNumber;
-        costomerModel[chatId].FirstName = update.Message.Contact.FirstName;
-        costomerModel[chatId].LastName = update.Message.Contact.LastName;
+        try
+        {
+            var chatId = update.Message.Chat.Id;
+            costomerModel[chatId].Phone = update.Message.Contact.PhoneNumber;
+            costomerModel[chatId].FirstName = update.Message.Contact.FirstName;
+            costomerModel[chatId].LastName = update.Message.Contact.LastName;
 
-        var keyboard = new ReplyKeyboardMarkup(new[]
-                {
+            var keyboard = new ReplyKeyboardMarkup(new[]
+                    {
                     new[]
                     {
                         new KeyboardButton("Нова заявка 📥"),
@@ -103,20 +116,26 @@ class Program
                         new KeyboardButton("Наша спільнота 📣")
                     }
                 })
+            {
+                OneTimeKeyboard = false,
+                ResizeKeyboard = true
+            };
+
+            await botClient.SendTextMessageAsync(
+                   chatId: chatId,
+                   text: $"*Контакт отримано* ✅ Тепер ми на зв'язку.",
+                   replyMarkup: keyboard,
+                   parseMode: ParseMode.Markdown,
+                   cancellationToken: cancellationToken
+               );
+
+            ProccesHowManyGive(botClient, chatId, cancellationToken);
+        }
+        catch (Exception ex)
         {
-            OneTimeKeyboard = false,
-            ResizeKeyboard = true
-        };
-
-        await botClient.SendTextMessageAsync(
-               chatId: chatId,
-               text: $"*Контакт отримано* ✅ Тепер ми на зв'язку.",
-               replyMarkup: keyboard,
-               parseMode: ParseMode.Markdown,
-               cancellationToken: cancellationToken
-           );
-
-        ProccesHowManyGive(botClient, chatId, cancellationToken);
+            Console.WriteLine($"Невідома помилка: {ex.Message}");
+            return;
+        }
     }
     static async Task OnMessage(ITelegramBotClient botClient, Message msg, CancellationToken cancellationToken)
     {
@@ -371,7 +390,7 @@ class Program
                                                 );
                                                 return;
                                             }
-                                            if (count < 500 || count > 100000)
+                                            else if ((costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8]) && (count < 500 || count > 100000))
                                             {
                                                 await botClient.SendTextMessageAsync(
                                                     chatId: chatId,
@@ -381,6 +400,7 @@ class Program
                                                 );
                                                 return;
                                             }
+
                                             costomerModel[chatId].HowMuchGet = count;
                                             var inlineKeyboard = new InlineKeyboardMarkup(new[]
                                             {
@@ -1166,7 +1186,7 @@ class Program
                    parseMode: ParseMode.Markdown,
                    cancellationToken: cancellationToken
                );
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine($"Невідома помилка: {ex.Message}");
             return;
         }
     }
@@ -1248,8 +1268,6 @@ class Program
                 {
                     if (query.Data == "NoOrder")
                     {
-                        ifTRC20Taken[chatId] = true;
-
                         if (costomerModel[chatId].CurrencyCell == currencies[0])
                         {
                             if (costomerModel[chatId].CurrencyGet == currencies[1])
@@ -1271,6 +1289,7 @@ class Program
                         }
                         else
                         {
+                            ifTRC20Taken[chatId] = true;
                             ProcessGetValue(botClient, chatId, cancellationToken, 0);
                         }
                     }
@@ -1803,7 +1822,7 @@ class Program
                     parseMode: ParseMode.Markdown,
                     cancellationToken: cancellationToken
                 );
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return;
         }
     }
@@ -1837,7 +1856,7 @@ class Program
             switch (bank)
             {
                 case 1:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json", MonoPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1853,7 +1872,7 @@ class Program
 
                     break;
                 case 2:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json");
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json", PryvatPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1869,7 +1888,7 @@ class Program
 
                     break;
                 case 3:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json");
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json", InshePercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1900,7 +1919,14 @@ class Program
         {
             if (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[3])
             {
-                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json");
+                if (costomerModel[chatId].CurrencyCell == currencies[1])
+                {
+                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json", MonoPercentage);
+                }
+                else
+                {
+                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json", InshePercentage);
+                }
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1917,7 +1943,7 @@ class Program
             }
             else if (costomerModel[chatId].CurrencyCell == currencies[2])
             {
-                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json");
+                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json", PryvatPercentage);
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",

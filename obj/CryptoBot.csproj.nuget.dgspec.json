@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj": {}
+    "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj": {}
   },
   "projects": {
-    "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj": {
+    "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
+        "projectUniqueName": "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
         "projectName": "CryptoBot",
-        "projectPath": "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
+        "projectPath": "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "d:\\Progects\\CryptoBot\\CryptoBot\\obj\\",
+        "outputPath": "D:\\Progects\\CryptoBot\\CryptoBot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

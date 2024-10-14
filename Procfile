@@ -1,1 +1,1 @@
-web: dotnet CryptoBot.dll
+web: dotnet bin/Release/net6.0/CryptoBot.dll

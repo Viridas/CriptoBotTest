@@ -1,0 +1,7 @@
+{
+    "name": "Ex_changer13_bot",
+    "description": "Bot for exchane currencies",
+    "repository": "https://github.com/Viridas/CryptoBot",
+    "keywords": ["telegram", "bot", "heroku"],
+    "stack": "heroku-22"
+  }

@@ -21,10 +21,13 @@ namespace CryptoBot.Services
             using (var httpClient = new HttpClient())
             {
                 var jsonContent = await File.ReadAllTextAsync(jsonFilePath, Encoding.UTF8);
+                Console.WriteLine(jsonContent);
 
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                Console.WriteLine(content);
 
                 var response = await httpClient.PostAsync(ApiUrl, content);
+                Console.WriteLine(response);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -37,6 +40,7 @@ namespace CryptoBot.Services
                         for (int i = 0; i < 5; i++)
                         {
                             prices.Add(Convert.ToDecimal(responseData.Data[i].Adv.Price, CultureInfo.InvariantCulture));
+                            Console.WriteLine($"{responseData.Data[i].Adv.Price}");
                         }
                     }
                 }

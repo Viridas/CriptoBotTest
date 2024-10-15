@@ -53,7 +53,7 @@ class Program
 
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient("7360889953:AAE5IDHDjW7ctNcpxLm0q2Bj9qdPU8T1QBs");
+        var bot = new TelegramBotClient(apiToken);
 
         var me = await bot.GetMeAsync();
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");
@@ -135,7 +135,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Невідома помилка: {ex.Message}");
+            Console.WriteLine($"Бот в режимі тестування, якщо виявите помилку, будь ласка, зверніться до менеджера.");
             return;
         }
     }

@@ -15,8 +15,9 @@ namespace CryptoBot.Services
             _httpClient = httpClient;
         }
 
-        private async Task<decimal> GetCryptoPriceAsync(string jsonFilePath)
+        private async Task<decimal> GetCryptoPriceAsync(string json)
         {
+            var jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), json);
             Console.WriteLine("Helo World");
             List<decimal> prices = new List<decimal>();
             using (var httpClient = new HttpClient())

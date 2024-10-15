@@ -31,6 +31,7 @@ class Program
     private static Dictionary<long, Message> UserMessage = new Dictionary<long, Message>();
     static async Task Main(string[] args)
     {
+        //Start
         currencies.Add("Tether, USDT");
         currencies.Add("Monobank, UAH");
         currencies.Add("ПриватБанк, UAH");

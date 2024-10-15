@@ -1,1 +1,1 @@
-worker: ./bin/Release/net6.0/CryptoBot.dll
+web: ./bin/Release/net6.0/CryptoBot.dll

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KbUW+Rgys6o=",
+  "dgSpecHash": "yXPlQiPgtfw=",
   "success": true,
-  "projectFilePath": "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
+  "projectFilePath": "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\binance.spot\\4.1.0\\binance.spot.4.1.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\htmlagilitypack\\1.11.65\\htmlagilitypack.1.11.65.nupkg.sha512",

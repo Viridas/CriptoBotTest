@@ -52,7 +52,7 @@ class Program
 
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient(apiToken);
+        var bot = new TelegramBotClient("API_TOKEN");
 
         var me = await bot.GetMeAsync();
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");

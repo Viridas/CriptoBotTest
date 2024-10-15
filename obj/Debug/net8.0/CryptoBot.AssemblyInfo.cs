@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CryptoBot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+601c1477ddce58e756ce1e43cfb33675b42e01a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+639cfdef39f2cb8faee42d05ff815bcac37386db")]
 [assembly: System.Reflection.AssemblyProductAttribute("CryptoBot")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CryptoBot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

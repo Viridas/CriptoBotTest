@@ -17,45 +17,53 @@ namespace CryptoBot.Services
 
         private async Task<decimal> GetCryptoPriceAsync(string json)
         {
-            var jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), json);
-            Console.WriteLine("Helo World");
-            List<decimal> prices = new List<decimal>();
-            using (var httpClient = new HttpClient())
+            try
             {
-                Console.WriteLine("Helo World2");
-                var jsonContent = await File.ReadAllTextAsync(jsonFilePath, Encoding.UTF8);
-                Console.WriteLine(jsonContent);
-
-                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                Console.WriteLine(content);
-
-                var response = await httpClient.PostAsync(ApiUrl, content);
-                Console.WriteLine(response);
-
-                if (response.IsSuccessStatusCode)
+                var jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), json);
+                Console.WriteLine("Helo World");
+                List<decimal> prices = new List<decimal>();
+                using (var httpClient = new HttpClient())
                 {
-                    var responseStream = await response.Content.ReadAsStreamAsync();
-                    using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
-                    using (var streamReader = new StreamReader(decompressedStream))
+                    Console.WriteLine("Helo World2");
+                    var jsonContent = await File.ReadAllTextAsync(jsonFilePath, Encoding.UTF8);
+                    Console.WriteLine(jsonContent);
+
+                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                    Console.WriteLine(content);
+
+                    var response = await httpClient.PostAsync(ApiUrl, content);
+                    Console.WriteLine(response);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        var responseBody = await streamReader.ReadToEndAsync();
-                        MyApiResponse responseData = JsonConvert.DeserializeObject<MyApiResponse>(responseBody);
-                        for (int i = 0; i < 5; i++)
+                        var responseStream = await response.Content.ReadAsStreamAsync();
+                        using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+                        using (var streamReader = new StreamReader(decompressedStream))
                         {
-                            prices.Add(Convert.ToDecimal(responseData.Data[i].Adv.Price, CultureInfo.InvariantCulture));
-                            Console.WriteLine($"{responseData.Data[i].Adv.Price}");
+                            var responseBody = await streamReader.ReadToEndAsync();
+                            MyApiResponse responseData = JsonConvert.DeserializeObject<MyApiResponse>(responseBody);
+                            for (int i = 0; i < 5; i++)
+                            {
+                                prices.Add(Convert.ToDecimal(responseData.Data[i].Adv.Price, CultureInfo.InvariantCulture));
+                                Console.WriteLine($"{responseData.Data[i].Adv.Price}");
+                            }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine($"Помилка: {response.StatusCode}");
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Відповідь API з помилкою: {errorContent}");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine($"Помилка: {response.StatusCode}");
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Відповідь API з помилкою: {errorContent}");
-                }
-            }
 
-            return await CountArithmeticMean(prices[0], prices[1], prices[2], prices[3], prices[4]);
+                return await CountArithmeticMean(prices[0], prices[1], prices[2], prices[3], prices[4]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return 0;
+            }
         }
         public async Task<decimal> CountRightProcentPriceAsync(string buyPath, string sellPath, decimal proz)
         {

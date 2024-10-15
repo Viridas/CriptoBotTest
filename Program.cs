@@ -52,7 +52,7 @@ class Program
 
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient("API_TOKEN");
+        var bot = new TelegramBotClient("7360889953:AAE5IDHDjW7ctNcpxLm0q2Bj9qdPU8T1QBs");
 
         var me = await bot.GetMeAsync();
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");
@@ -1196,7 +1196,7 @@ class Program
     {
         try
         {
-            var chatId = query.Message.Chat.Id;
+            var chatId = Convert.ToInt64(query.Id);
             if (query.Data != null)
             {
                 if (currencies.Any(x => x.ToLower() == query.Data || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 1))) || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 2)))
@@ -1816,7 +1816,7 @@ class Program
         }
         catch (Exception ex)
         {
-            var chatId = query.Message.Chat.Id;
+            var chatId = Convert.ToInt64(query.Id);;
             await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "❗ Некоректна форма введення ❗️",

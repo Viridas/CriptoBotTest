@@ -21,7 +21,8 @@
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.voids.site/v3/index.json": {}
+          "https://nuget.voids.site/v3/index.json": {},
+          "https://pkgs.dev.azure.com/tgbots/Telegram.Bot/_packaging/release/nuget/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -54,7 +55,7 @@
             },
             "Telegram.Bot": {
               "target": "Package",
-              "version": "[21.11.0, )"
+              "version": "[20.0.0, )"
             }
           },
           "imports": [

@@ -1,1 +1,1 @@
-worker: dotnet ./bin/Release/net6.0/CryptoBot.dll
+web: dotnet ./bin/Release/net6.0/CryptoBot.dll

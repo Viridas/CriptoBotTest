@@ -1858,7 +1858,7 @@ class Program
             switch (bank)
             {
                 case 1:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json", MonoPercentage);
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"monoLeftBuyRequest.json", @"monoLeftSellRequest.json", MonoPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1874,7 +1874,7 @@ class Program
 
                     break;
                 case 2:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatLeftSellRequest.json", PryvatPercentage);
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"pryvatLeftBuyRequest.json", @"pryvatLeftSellRequest.json", PryvatPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1890,7 +1890,7 @@ class Program
 
                     break;
                 case 3:
-                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoLeftBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoLeftSellRequest.json", InshePercentage);
+                    costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"monoLeftBuyRequest.json", @"monoLeftSellRequest.json", InshePercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
@@ -1923,11 +1923,11 @@ class Program
             {
                 if (costomerModel[chatId].CurrencyCell == currencies[1])
                 {
-                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json", MonoPercentage);
+                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"monoRightBuyRequest.json", @"monoRightSellRequest.json", MonoPercentage);
                 }
                 else
                 {
-                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\monoRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\monoRightSellRequest.json", InshePercentage);
+                    costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"monoRightBuyRequest.json", @"monoRightSellRequest.json", InshePercentage);
                 }
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
@@ -1945,7 +1945,7 @@ class Program
             }
             else if (costomerModel[chatId].CurrencyCell == currencies[2])
             {
-                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"D:\Progects\CryptoBot\CryptoBot\pryvatRightBuyRequest.json", @"D:\Progects\CryptoBot\CryptoBot\pryvatRightSellRequest.json", PryvatPercentage);
+                costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"pryvatRightBuyRequest.json", @"pryvatRightSellRequest.json", PryvatPercentage);
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",

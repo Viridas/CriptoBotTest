@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using CryptoBot;
 using CryptoBot.Services;
+using Microsoft.AspNetCore.Builder;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -31,7 +32,22 @@ class Program
     private static Dictionary<long, Message> UserMessage = new Dictionary<long, Message>();
     static async Task Main(string[] args)
     {
-        //Start 
+        var builder = WebApplication.CreateBuilder(args);
+
+        var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
+
+        var bot = new TelegramBotClient(apiToken);
+        var cts = new CancellationTokenSource();
+
+         _ = Task.Run(() => StartBot(bot, cts.Token));
+         
+        var app = builder.Build();
+        app.MapGet("/", () => "Bot is running...");
+        app.Run();
+    }
+
+    private static async Task StartBot(TelegramBotClient bot, CancellationToken cancellationToken)
+    {
         currencies.Add("Tether, USDT");
         currencies.Add("Monobank, UAH");
         currencies.Add("ПриватБанк, UAH");
@@ -50,10 +66,6 @@ class Program
         currencies.Add("Виплата на карти Європи (при наявності IBAN карти)");
         currencies.Add("Інше (обмін BTC, GBP, індивідуальне завдання і т.п.)");
         currencies.Add("Гривня, UAH");
-
-        var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
-
-        var bot = new TelegramBotClient(apiToken);
 
         var me = await bot.GetMeAsync();
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");

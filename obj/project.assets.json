@@ -8,46 +8,30 @@
           "Newtonsoft.Json": "13.0.1"
         },
         "compile": {
-          "lib/netstandard2.0/Common.dll": {
-            "related": ".xml"
-          },
-          "lib/netstandard2.0/Spot.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/Common.dll": {},
+          "lib/netstandard2.0/Spot.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/Common.dll": {
-            "related": ".xml"
-          },
-          "lib/netstandard2.0/Spot.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/Common.dll": {},
+          "lib/netstandard2.0/Spot.dll": {}
         }
       },
       "HtmlAgilityPack/1.11.65": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/HtmlAgilityPack.dll": {
-            "related": ".deps.json;.pdb;.xml"
-          }
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/HtmlAgilityPack.dll": {
-            "related": ".deps.json;.pdb;.xml"
-          }
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {}
         }
       },
       "Newtonsoft.Json/13.0.1": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
       "Telegram.Bot/18.0.0": {
@@ -56,14 +40,10 @@
           "Newtonsoft.Json": "12.0.2"
         },
         "compile": {
-          "lib/netcoreapp3.1/Telegram.Bot.dll": {
-            "related": ".pdb;.xml"
-          }
+          "lib/netcoreapp3.1/Telegram.Bot.dll": {}
         },
         "runtime": {
-          "lib/netcoreapp3.1/Telegram.Bot.dll": {
-            "related": ".pdb;.xml"
-          }
+          "lib/netcoreapp3.1/Telegram.Bot.dll": {}
         }
       }
     }
@@ -195,11 +175,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
+      "projectUniqueName": "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
       "projectName": "CryptoBot",
-      "projectPath": "d:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
+      "projectPath": "D:\\Progects\\CryptoBot\\CryptoBot\\CryptoBot.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "d:\\Progects\\CryptoBot\\CryptoBot\\obj\\",
+      "outputPath": "D:\\Progects\\CryptoBot\\CryptoBot\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -221,11 +201,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -251,35 +226,16 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.132\\RuntimeIdentifierGraph.json"
       }
     }
   }

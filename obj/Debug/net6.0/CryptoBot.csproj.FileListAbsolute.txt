@@ -10,13 +10,12 @@ D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.GeneratedMSBuildEdito
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.AssemblyInfoInputs.cache
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.AssemblyInfo.cs
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.csproj.CoreCompileInputs.cache
-D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.csproj.Up2Date
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.dll
-D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\refint\CryptoBot.dll
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.pdb
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.genruntimeconfig.cache
 D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\ref\CryptoBot.dll
 D:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\Common.dll
 D:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\Spot.dll
 d:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\HtmlAgilityPack.dll
-d:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.sourcelink.json
+D:\Progects\CryptoBot\CryptoBot\bin\Debug\net6.0\ref\CryptoBot.dll
+D:\Progects\CryptoBot\CryptoBot\obj\Debug\net6.0\CryptoBot.csproj.CopyComplete

@@ -21,6 +21,7 @@ namespace CryptoBot.Services
             List<decimal> prices = new List<decimal>();
             using (var httpClient = new HttpClient())
             {
+                Console.WriteLine("Helo World2");
                 var jsonContent = await File.ReadAllTextAsync(jsonFilePath, Encoding.UTF8);
                 Console.WriteLine(jsonContent);
 

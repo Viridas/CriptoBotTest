@@ -1197,7 +1197,7 @@ class Program
     {
         try
         {
-            var chatId = Convert.ToInt64(query.Id);
+            var chatId = query.Message.Chat;
             if (query.Data != null)
             {
                 if (currencies.Any(x => x.ToLower() == query.Data || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 1))) || currencies.Any(x => x.ToLower() == query.Data.Substring(0, query.Data.Length - 2)))
@@ -1817,7 +1817,7 @@ class Program
         }
         catch (Exception ex)
         {
-            var chatId = Convert.ToInt64(query.Id);;
+            var chatId = query.Message.Chat;
             await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "❗ Некоректна форма введення ❗️",

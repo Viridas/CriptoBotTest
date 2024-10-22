@@ -188,6 +188,10 @@ class Program
             }
             else if (msg.Text == "Нова заявка 📥")
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 ZeroVariables(botClient, chatId, cancellationToken);
 
                 if (!costomerModel.ContainsKey(chatId))
@@ -229,6 +233,10 @@ class Program
             }
             else if (msg.Text == "Умови та про нас 📃")
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
                     new[]
@@ -247,6 +255,10 @@ class Program
             }
             else if (msg.Text == "Ваші відгуки 💬")
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
                     new[]
@@ -265,6 +277,10 @@ class Program
             }
             else if (msg.Text == "Наша спільнота 📣")
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
                     new[]
@@ -283,6 +299,10 @@ class Program
             }
             else if (decimal.TryParse(msg.Text, out decimal count) && count.ToString().Length != 16 && ifCheckNumber.ContainsKey(chatId) && ifCheckNumber[chatId] == false)
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 if (costomerModel.ContainsKey(chatId))
                 {
                     if (HowMuchGet.ContainsKey(chatId))
@@ -894,8 +914,12 @@ class Program
                     }
                 }
             }
-            else if (long.TryParse(msg.Text, out long cardNumber) && cardNumber.ToString().Length == 16 && ifCheckNumber.ContainsKey(chatId))
+            else if (long.TryParse(msg.Text.Replace(" ", ""), out long cardNumber) && cardNumber.ToString().Length == 16 && ifCheckNumber.ContainsKey(chatId))
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 if (!ifCheckNumber[chatId])
                 {
                     await botClient.SendTextMessageAsync(
@@ -962,6 +986,10 @@ class Program
             }
             else if (ifInshaHotivkaTaken.ContainsKey(chatId) && ifTRC20Taken.ContainsKey(chatId) && (ifInshaHotivkaTaken[chatId] || ifTRC20Taken[chatId]))
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 if (ifInshaHotivkaTaken[chatId])
                 {
                     costomerModel[chatId].CurrencyGet = msg.Text;
@@ -1096,14 +1124,18 @@ class Program
             }
             else if (inshe.ContainsKey(chatId) && ifCheckNumber.ContainsKey(chatId))
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 if (ifCheckNumber[chatId])
                 {
                     await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: "❗ Некоректна форма введення ❗️",
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken
-            );
+                        chatId: chatId,
+                        text: "❗ Некоректна форма введення ❗️",
+                        parseMode: ParseMode.Markdown,
+                        cancellationToken: cancellationToken
+                    );
                     return;
                 }
                 if (inshe[chatId] == true)
@@ -1184,6 +1216,10 @@ class Program
             }
             else
             {
+                if(chatId == adminChatId)
+                {
+                    return;
+                }
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "❗ Некоректна форма введення ❗️",

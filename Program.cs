@@ -1056,7 +1056,7 @@ class Program
                         );
                         return;
                     }
-                    if (msg.Text.Length > 500)
+                    if (msg.Text.Length > 100)
                     {
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,

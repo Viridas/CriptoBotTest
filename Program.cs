@@ -39,7 +39,7 @@ class Program
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
         /// Api Token for tests 7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y
-        var bot = new TelegramBotClient("7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y");
+        var bot = new TelegramBotClient(apiToken);
         var cts = new CancellationTokenSource();
 
         _ = Task.Run(() => StartBot(bot, cts.Token));

@@ -1,7 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using CryptoBot;
 using CryptoBot.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.VisualBasic;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -36,11 +38,12 @@ class Program
 
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient(apiToken);
+        /// Api Token for tests 7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y
+        var bot = new TelegramBotClient("7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y");
         var cts = new CancellationTokenSource();
 
-         _ = Task.Run(() => StartBot(bot, cts.Token));
-         
+        _ = Task.Run(() => StartBot(bot, cts.Token));
+
         var app = builder.Build();
         app.MapGet("/", () => "Bot is running...");
         app.Run();
@@ -188,7 +191,7 @@ class Program
             }
             else if (msg.Text == "Нова заявка 📥")
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -233,7 +236,7 @@ class Program
             }
             else if (msg.Text == "Умови та про нас 📃")
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -255,7 +258,7 @@ class Program
             }
             else if (msg.Text == "Ваші відгуки 💬")
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -277,7 +280,7 @@ class Program
             }
             else if (msg.Text == "Наша спільнота 📣")
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -299,7 +302,7 @@ class Program
             }
             else if (decimal.TryParse(msg.Text, out decimal count) && count.ToString().Length != 16 && ifCheckNumber.ContainsKey(chatId) && ifCheckNumber[chatId] == false)
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -914,9 +917,9 @@ class Program
                     }
                 }
             }
-            else if (long.TryParse(msg.Text.Replace(" ", ""), out long cardNumber) && cardNumber.ToString().Length == 16 && ifCheckNumber.ContainsKey(chatId))
+            else if (new string(msg.Text.Where(char.IsDigit).ToArray()).Length % 16 == 0 && ifCheckNumber.ContainsKey(chatId))
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -936,14 +939,30 @@ class Program
 
                 if (costomerModel.ContainsKey(chatId))
                 {
-                    costomerModel[chatId].CardNumber = cardNumber.ToString();
+                    int chunkSize = 16;
+                    StringBuilder result = new StringBuilder();
+                    string cardNumbers = new string(msg.Text.Where(char.IsDigit).ToArray());
+
+                    for (int i = 0; i < cardNumbers.Length; i += chunkSize)
+                    {
+                        if (i + chunkSize < cardNumbers.Length)
+                        {
+                            result.Append(cardNumbers.Substring(i, chunkSize) + " ");
+                        }
+                        else
+                        {
+                            result.Append(cardNumbers.Substring(i));
+                        }
+                    }
+
+                    costomerModel[chatId].CardNumber = result.ToString();;
                     if (costomerModel[chatId].Phone == null)
                     {
                         var keyboard = new ReplyKeyboardMarkup(new[]
                         {
                             new[]
                             {
-                            KeyboardButton.WithRequestContact("Надіслати контакт 📲")
+                                KeyboardButton.WithRequestContact("Надіслати контакт 📲")
                             }
                         })
                         {
@@ -953,7 +972,7 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                             parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
@@ -986,7 +1005,7 @@ class Program
             }
             else if (ifInshaHotivkaTaken.ContainsKey(chatId) && ifTRC20Taken.ContainsKey(chatId) && (ifInshaHotivkaTaken[chatId] || ifTRC20Taken[chatId]))
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -1010,7 +1029,7 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                             parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
@@ -1026,7 +1045,7 @@ class Program
                 }
                 else if (ifTRC20Taken[chatId])
                 {
-                    string pattern = @"^[a-zA-Z0-9]+$";
+                    string pattern = @"^[a-zA-Z0-9\s\W]+$";
 
                     bool isValid = Regex.IsMatch(msg.Text, pattern);
                     if (!isValid)
@@ -1037,7 +1056,7 @@ class Program
                         );
                         return;
                     }
-                    if (msg.Text.Length > 100)
+                    if (msg.Text.Length > 500)
                     {
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
@@ -1065,7 +1084,7 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                             parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
@@ -1124,7 +1143,7 @@ class Program
             }
             else if (inshe.ContainsKey(chatId) && ifCheckNumber.ContainsKey(chatId))
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -1171,7 +1190,7 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                             parseMode: ParseMode.Markdown,
                             replyMarkup: keyboard);
                     }
@@ -1216,7 +1235,7 @@ class Program
             }
             else
             {
-                if(chatId == adminChatId)
+                if (chatId == adminChatId)
                 {
                     return;
                 }
@@ -1363,7 +1382,7 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                                text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                                 parseMode: ParseMode.Markdown,
                                 replyMarkup: keyboard);
                         }
@@ -1536,7 +1555,7 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: "Надішліть ваш *контакт* Telegram, щоб *менеджер*👨🏻‍💻 міг з вами зв'язатись.",
+                                text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
                                 parseMode: ParseMode.Markdown,
                                 replyMarkup: keyboard);
                         }
@@ -1865,7 +1884,7 @@ class Program
         }
         catch (Exception ex)
         {
-            var chatId = query.Message.Chat.Id;;
+            var chatId = query.Message.Chat.Id; ;
             await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "❗ Некоректна форма введення ❗️",
@@ -2028,7 +2047,7 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111 3333 1111 3333.</i>",
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти. <i>Наприклад: 1111 3333 1111 3333, 1234123412341234.</i>",
                     parseMode: ParseMode.Html);
                     break;
                 case 2:
@@ -2044,7 +2063,7 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111 3333 1111 3333.</i>",
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти. <i>Наприклад: 1111 3333 1111 3333, 1234123412341234.</i>",
                     parseMode: ParseMode.Html);
                     break;
                 case 3:
@@ -2060,7 +2079,7 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти (16 цифр). <i>Наприклад: 1111 3333 1111 3333.</i>",
+                    text: "Введіть <b>номер карти</b> 💳, куди бажаєте отримати кошти. <i>Наприклад: 1111 3333 1111 3333, 1234123412341234.</i>",
                     parseMode: ParseMode.Html);
                     break;
                 case 8:

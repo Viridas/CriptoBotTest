@@ -140,9 +140,9 @@ class Program
 
             await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: $"*Контакт отримано* ✅ Тепер ми на зв'язку.",
+                   text: $"<b>Контакт отримано</b> ✅ Тепер ми на зв'язку.",
                    replyMarkup: keyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
 
@@ -183,9 +183,9 @@ class Program
 
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: "*Меню* 🔁:",
+                   text: "<b>Меню</b> 🔁:",
                    replyMarkup: keyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -230,7 +230,7 @@ class Program
                    chatId: chatId,
                    text: "Нова заявка 📥",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -252,7 +252,7 @@ class Program
                    chatId: chatId,
                    text: "Умови та про нас 📃",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -274,7 +274,7 @@ class Program
                    chatId: chatId,
                    text: "Ваші відгуки 💬",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -296,7 +296,7 @@ class Program
                    chatId: chatId,
                    text: "Наша спільнота 📣",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -331,7 +331,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: $"❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -355,13 +355,13 @@ class Program
 
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} USDT</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} UAH</b>\n \n🔐 P2P-ордер: <b>{order}</b>\n{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -380,7 +380,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: $"❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -404,13 +404,13 @@ class Program
 
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} USDT</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} UAH</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -422,7 +422,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                     chatId: chatId,
                                                     text: $"❗ Некоректна форма введення ❗️",
-                                                    parseMode: ParseMode.Markdown,
+                                                    parseMode: ParseMode.Html,
                                                     cancellationToken: cancellationToken
                                                 );
                                                 return;
@@ -432,7 +432,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                     chatId: chatId,
                                                     text: $"❗ Некоректна форма введення ❗️",
-                                                    parseMode: ParseMode.Markdown,
+                                                    parseMode: ParseMode.Html,
                                                     cancellationToken: cancellationToken
                                                 );
                                                 return;
@@ -460,9 +460,9 @@ class Program
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {valute}*\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} {valute}</b>\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -475,7 +475,7 @@ class Program
                                             await botClient.SendTextMessageAsync(
                                                chatId: chatId,
                                                text: "❗ Некоректна форма введення ❗️",
-                                               parseMode: ParseMode.Markdown,
+                                               parseMode: ParseMode.Html,
                                                cancellationToken: cancellationToken
                                            );
                                             return;
@@ -504,13 +504,13 @@ class Program
 
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} UAH</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} USDT</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -539,13 +539,13 @@ class Program
 
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} UAH</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} USDT</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -558,7 +558,7 @@ class Program
                                             await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
                                                 text: $"❗ Некоректна форма введення ❗️",
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             return;
@@ -583,9 +583,9 @@ class Program
 
                                         UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                             chatId: chatId,
-                                            text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                            text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} USDT</b>\n \n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                             replyMarkup: inlineKeyboard,
-                                            parseMode: ParseMode.Markdown,
+                                            parseMode: ParseMode.Html,
                                             cancellationToken: cancellationToken
                                         );
                                         SendToAdmin(botClient, chatId, cancellationToken);
@@ -602,7 +602,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: "❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -631,13 +631,13 @@ class Program
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var confirm = "Не підтверджена ⚠️";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} USDT</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} UAH</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -649,7 +649,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: "❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -678,13 +678,13 @@ class Program
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var confirm = "Не підтверджена ⚠️";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} USDT*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} UAH*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} USDT</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} UAH</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -696,7 +696,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                chatId: chatId,
                                                text: "❗ Некоректна форма введення ❗️",
-                                               parseMode: ParseMode.Markdown,
+                                               parseMode: ParseMode.Html,
                                                cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -721,9 +721,9 @@ class Program
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: *{costomerModel[chatId].HowMuchGives} USDT*\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: <b>{costomerModel[chatId].HowMuchGives} USDT</b>\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -745,7 +745,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: $"❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -769,13 +769,13 @@ class Program
 
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} UAH</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} USDT</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -795,7 +795,7 @@ class Program
                                                 await botClient.SendTextMessageAsync(
                                                    chatId: chatId,
                                                    text: $"❗ Некоректна форма введення ❗️",
-                                                   parseMode: ParseMode.Markdown,
+                                                   parseMode: ParseMode.Html,
                                                    cancellationToken: cancellationToken
                                                );
                                                 return;
@@ -819,13 +819,13 @@ class Program
 
                                             var order = costomerModel[chatId].Order == true ? "Так, через ордер" : "Ні, без ордера";
                                             var getCurr = costomerModel[chatId].CurrencyGet == currencies[1] ? "UAH" : "USDT";
-                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                                            var card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
 
                                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
-                                                text: $"📥 Заявка ID:: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} UAH*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} USDT*\n \n🔐 P2P-ордер: *{order}*{card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}",
+                                                text: $"📥 Заявка ID:: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} UAH</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} USDT</b>\n \n🔐 P2P-ордер: <b>{order}</b>{card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}",
                                                 replyMarkup: inlineKeyboard,
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -840,7 +840,7 @@ class Program
                                             await botClient.SendTextMessageAsync(
                                                 chatId: chatId,
                                                 text: $"❗ Некоректна форма введення ❗️",
-                                                parseMode: ParseMode.Markdown,
+                                                parseMode: ParseMode.Html,
                                                 cancellationToken: cancellationToken
                                             );
                                             return;
@@ -850,7 +850,7 @@ class Program
                                             await botClient.SendTextMessageAsync(
                                                chatId: chatId,
                                                text: $"❗ Некоректна форма введення ❗️",
-                                               parseMode: ParseMode.Markdown,
+                                               parseMode: ParseMode.Html,
                                                cancellationToken: cancellationToken
                                             );
                                             return;
@@ -877,9 +877,9 @@ class Program
 
                                         UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                             chatId: chatId,
-                                            text: $"📥 Заявка ID: *{randomNumber}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: *{costomerModel[chatId].HowMuchGives} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                            text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n💰Сума, яку віддаєте: <b>{costomerModel[chatId].HowMuchGives} {valute}</b>\n \n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                             replyMarkup: inlineKeyboard,
-                                            parseMode: ParseMode.Markdown,
+                                            parseMode: ParseMode.Html,
                                             cancellationToken: cancellationToken
                                         );
                                         SendToAdmin(botClient, chatId, cancellationToken);
@@ -891,7 +891,7 @@ class Program
                                 await botClient.SendTextMessageAsync(
                                                chatId: chatId,
                                                text: $"❗ Некоректна форма введення ❗️",
-                                               parseMode: ParseMode.Markdown,
+                                               parseMode: ParseMode.Html,
                                                cancellationToken: cancellationToken
                                            );
                             }
@@ -901,7 +901,7 @@ class Program
                             await botClient.SendTextMessageAsync(
                                                chatId: chatId,
                                                text: $"❗ Некоректна форма введення ❗️",
-                                               parseMode: ParseMode.Markdown,
+                                               parseMode: ParseMode.Html,
                                                cancellationToken: cancellationToken
                                            );
                         }
@@ -911,7 +911,7 @@ class Program
                         await botClient.SendTextMessageAsync(
                                            chatId: chatId,
                                            text: $"❗ Некоректна форма введення ❗️",
-                                           parseMode: ParseMode.Markdown,
+                                           parseMode: ParseMode.Html,
                                            cancellationToken: cancellationToken
                                        );
                     }
@@ -928,7 +928,7 @@ class Program
                     await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "❗ Некоректна форма введення ❗️",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                    );
 
@@ -972,8 +972,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                            parseMode: ParseMode.Markdown,
+                            text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Html,
                             replyMarkup: keyboard);
                     }
                     else
@@ -987,7 +987,7 @@ class Program
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "Введіть пароль",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -999,7 +999,7 @@ class Program
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "Цей чат тепер для адмінів",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -1029,8 +1029,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                            parseMode: ParseMode.Markdown,
+                            text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Html,
                             replyMarkup: keyboard);
                     }
                     else
@@ -1038,7 +1038,7 @@ class Program
                         await botClient.SendTextMessageAsync(
                            chatId: chatId,
                            text: "Дякуємо за довіру, очікуйте декілька хвилин з вами зв'яжеться менеджер для здійснення угоди.",
-                           parseMode: ParseMode.Markdown,
+                           parseMode: ParseMode.Html,
                            cancellationToken: cancellationToken
                        );
                     }
@@ -1084,8 +1084,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                            parseMode: ParseMode.Markdown,
+                            text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Html,
                             replyMarkup: keyboard);
                     }
                     else
@@ -1109,9 +1109,9 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                chatId: chatId,
-                               text: $"Введіть суму *{costomerModel[chatId].CurrencyCell}* яку віддаєте ➡️ (ліміт: *{min} UAH* - *{max} UAH*):",
+                               text: $"Введіть суму <b>{costomerModel[chatId].CurrencyCell}</b> яку віддаєте ➡️ (ліміт: <b>{min} UAH</b> - <b>{max} UAH</b>):",
                                replyMarkup: inlineKeyboard,
-                               parseMode: ParseMode.Markdown,
+                               parseMode: ParseMode.Html,
                                cancellationToken: cancellationToken
                            );
                         }
@@ -1132,9 +1132,9 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                chatId: chatId,
-                               text: $"Введіть скільки ви віддаєте ➡️ (ліміт: *{min} {valute} - {max} {valute}*):",
+                               text: $"Введіть скільки ви віддаєте ➡️ (ліміт: <b>{min} {valute} - {max} {valute}</b>):",
                                replyMarkup: inlineKeyboard,
-                               parseMode: ParseMode.Markdown,
+                               parseMode: ParseMode.Html,
                                cancellationToken: cancellationToken
                            );
                         }
@@ -1152,7 +1152,7 @@ class Program
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: "❗ Некоректна форма введення ❗️",
-                        parseMode: ParseMode.Markdown,
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
                     return;
@@ -1164,7 +1164,7 @@ class Program
                         await botClient.SendTextMessageAsync(
                        chatId: chatId,
                        text: "❗ Некоректна форма введення ❗️",
-                       parseMode: ParseMode.Markdown,
+                       parseMode: ParseMode.Html,
                        cancellationToken: cancellationToken
                        );
                         return;
@@ -1190,8 +1190,8 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                            parseMode: ParseMode.Markdown,
+                            text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                            parseMode: ParseMode.Html,
                             replyMarkup: keyboard);
                     }
                     else
@@ -1214,9 +1214,9 @@ class Program
 
                         UserMessage[chatId] = await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                            text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n💰 Послуга: <b>{costomerModel[chatId].Service}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                             replyMarkup: inlineKeyboard,
-                            parseMode: ParseMode.Markdown,
+                            parseMode: ParseMode.Html,
                             cancellationToken: cancellationToken
                         );
 
@@ -1228,7 +1228,7 @@ class Program
                     await botClient.SendTextMessageAsync(
                        chatId: chatId,
                        text: "❗ Некоректна форма введення ❗️",
-                       parseMode: ParseMode.Markdown,
+                       parseMode: ParseMode.Html,
                        cancellationToken: cancellationToken
                    );
                 }
@@ -1242,7 +1242,7 @@ class Program
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "❗ Некоректна форма введення ❗️",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -1252,7 +1252,7 @@ class Program
             await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "❗ Некоректна форма введення ❗️",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             Console.WriteLine($"Невідома помилка: {ex.Message}");
@@ -1301,9 +1301,9 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                        chatId: chatId,
-                       text: "Оберіть, що *віддаєте* ➡️:",
+                       text: "Оберіть, що <b>віддаєте</b> ➡️:",
                        replyMarkup: inlineKeyboard,
-                       parseMode: ParseMode.Markdown,
+                       parseMode: ParseMode.Html,
                        cancellationToken: cancellationToken
                    );
                 }
@@ -1327,9 +1327,9 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                        chatId: chatId,
-                       text: "Оберіть, що *віддаєте* ➡️:",
+                       text: "Оберіть, що <b>віддаєте</b> ➡️:",
                        replyMarkup: inlineKeyboard,
-                       parseMode: ParseMode.Markdown,
+                       parseMode: ParseMode.Html,
                        cancellationToken: cancellationToken
                    );
                 }
@@ -1382,8 +1382,8 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                                parseMode: ParseMode.Markdown,
+                                text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                                parseMode: ParseMode.Html,
                                 replyMarkup: keyboard);
                         }
                         else
@@ -1412,8 +1412,8 @@ class Program
                             var max = 20000 * course;
                             await botClient.SendTextMessageAsync(
                                chatId: chatId,
-                               text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} UAH* - *{max} UAH*):",
-                               parseMode: ParseMode.Markdown,
+                               text: $"Введіть суму <b>{costomerModel[chatId].CurrencyGet}</b>, яку отримаєте ⬅️ (ліміт: <b>{min} UAH</b> - <b>{max} UAH</b>):",
+                               parseMode: ParseMode.Html,
                                replyMarkup: inlineKeyboard,
                                cancellationToken: cancellationToken
                            );
@@ -1424,9 +1424,9 @@ class Program
                             var max = 20000;
                             await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} USDT* - *{max} USDT*):",
+                                text: $"Введіть суму <b>{costomerModel[chatId].CurrencyGet}</b>, яку отримаєте ⬅️ (ліміт: <b>{min} USDT</b> - <b>{max} USDT</b>):",
                                 replyMarkup: inlineKeyboard,
-                                parseMode: ParseMode.Markdown,
+                                parseMode: ParseMode.Html,
                                 cancellationToken: cancellationToken
                             );
                         }
@@ -1438,9 +1438,9 @@ class Program
                             var max = costomerModel[chatId].CurrencyGet == currencies[17] ? 4000000 : 100000;
                             await botClient.SendTextMessageAsync(
                                     chatId: chatId,
-                                    text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *{min} {valute}* - *{max} {valute}*):",
+                                    text: $"Введіть суму <b>{costomerModel[chatId].CurrencyGet}</b>, яку отримаєте ⬅️ (ліміт: <b>{min} {valute}</b> - <b>{max} {valute}</b>):",
                                     replyMarkup: inlineKeyboard,
-                                    parseMode: ParseMode.Markdown,
+                                    parseMode: ParseMode.Html,
                                     cancellationToken: cancellationToken
                                 );
                         }
@@ -1448,8 +1448,8 @@ class Program
                         {
                             await botClient.SendTextMessageAsync(
                                     chatId: chatId,
-                                    text: $"Введіть суму *{costomerModel[chatId].CurrencyGet}*, яку отримаєте ⬅️ (ліміт: *500 USDT* - *100000 USDT*):",
-                                    parseMode: ParseMode.Markdown,
+                                    text: $"Введіть суму <b>{costomerModel[chatId].CurrencyGet}</b>, яку отримаєте ⬅️ (ліміт: <b>500 USDT</b> - <b>100000 USDT</b>):",
+                                    parseMode: ParseMode.Html,
                                     replyMarkup: inlineKeyboard,
                                     cancellationToken: cancellationToken
                                 );
@@ -1503,7 +1503,7 @@ class Program
                         chatId: chatId,
                         text: $"Інший обмін та послуги з криптовалютами🧾",
                         replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
 
                     );
@@ -1555,8 +1555,8 @@ class Program
 
                             await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: "Натисніть кнопку *\"Надіслати контакт 📲\"*, щоб наш *менеджер* 👨🏻‍💻 міг з вами зв'язатись.",
-                                parseMode: ParseMode.Markdown,
+                                text: "Натисніть кнопку <b>\"Надіслати контакт 📲\"</b>, щоб наш <b>менеджер</b> 👨🏻‍💻 міг з вами зв'язатись.",
+                                parseMode: ParseMode.Html,
                                 replyMarkup: keyboard);
                         }
                         else
@@ -1579,9 +1579,9 @@ class Program
 
                             UserMessage[chatId] = await botClient.SendTextMessageAsync(
                                 chatId: chatId,
-                                text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                                text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n💰 Послуга: <b>{costomerModel[chatId].Service}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                                 replyMarkup: inlineKeyboard,
-                                parseMode: ParseMode.Markdown,
+                                parseMode: ParseMode.Html,
                                 cancellationToken: cancellationToken
                             );
                             SendToAdmin(botClient, chatId, cancellationToken);
@@ -1604,8 +1604,8 @@ class Program
                 {
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: "*Меню* 🔁:",
-                        parseMode: ParseMode.Markdown,
+                        text: "<b>Меню</b> 🔁:",
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
 
@@ -1618,8 +1618,8 @@ class Program
                     inshe[chatId] = true;
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: "Опишіть *детально* ваше завдання або обмін, які хочете здійснити. Вкажіть більше інформації та суму для того, щоб ми могли вам допомогти (ліміт: *500 символів*)📝",
-                        parseMode: ParseMode.Markdown,
+                        text: "Опишіть <b>детально</b> ваше завдання або обмін, які хочете здійснити. Вкажіть більше інформації та суму для того, щоб ми могли вам допомогти (ліміт: <b>500 символів</b>)📝",
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
                 }
@@ -1628,7 +1628,7 @@ class Program
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
                         text: "❗ Incorrect command ❗",
-                        parseMode: ParseMode.Markdown,
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
                 }
@@ -1688,9 +1688,9 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: $"Віддаєте: *{currency}*. Оберіть, що *отримаєте* ⬅️:",
+                            text: $"Віддаєте: <b>{currency}</b>. Оберіть, що <b>отримаєте</b> ⬅️:",
                             replyMarkup: inlineKeyboard,
-                            parseMode: ParseMode.Markdown,
+                            parseMode: ParseMode.Html,
                             cancellationToken: cancellationToken
                         );
                     }
@@ -1735,7 +1735,7 @@ class Program
                             chatId: chatId,
                             text: "Будь ласка, оберіть валюту яку отримаєте",
                             replyMarkup: inlineKeyboard,
-                            parseMode: ParseMode.Markdown,
+                            parseMode: ParseMode.Html,
                             cancellationToken: cancellationToken
                         );
                     }
@@ -1780,9 +1780,9 @@ class Program
 
                         await botClient.SendTextMessageAsync(
                             chatId: chatId,
-                            text: $"Віддаєте: *{currency}*. Оберіть, що *отримаєте* ⬅️:",
+                            text: $"Віддаєте: <b>{currency}</b>. Оберіть, що <b>отримаєте</b> ⬅️:",
                             replyMarkup: inlineKeyboard,
-                            parseMode: ParseMode.Markdown,
+                            parseMode: ParseMode.Html,
                             cancellationToken: cancellationToken
                         );
                     }
@@ -1827,7 +1827,7 @@ class Program
                             chatId: chatId,
                             text: "Будь ласка, оберіть валюту яку отримаєте",
                             replyMarkup: inlineKeyboard,
-                            parseMode: ParseMode.Markdown,
+                            parseMode: ParseMode.Html,
                             cancellationToken: cancellationToken
                         );
                     }
@@ -1888,7 +1888,7 @@ class Program
             await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "❗ Некоректна форма введення ❗️",
-                    parseMode: ParseMode.Markdown,
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
             Console.WriteLine(ex.Message);
@@ -1928,57 +1928,57 @@ class Program
                     costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"../monoLeftBuyRequest.json", @"../monoLeftSellRequest.json", MonoPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
-                        parseMode: ParseMode.Markdown,
+                        text: $"➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>",
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через <b>ордер на P2P-платформі Binance</b> (виступає як гарант угоди)?",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown);
+                    parseMode: ParseMode.Html);
 
                     break;
                 case 2:
                     costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"../pryvatLeftBuyRequest.json", @"../pryvatLeftSellRequest.json", PryvatPercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
-                        parseMode: ParseMode.Markdown,
+                        text: $"➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>",
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через <b>ордер на P2P-платформі Binance</b> (виступає як гарант угоди)?",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown);
+                    parseMode: ParseMode.Html);
 
                     break;
                 case 3:
                     costomerModel[chatId].Course = await binanceService.CountLeftProcentPriceAsync(@"../monoLeftBuyRequest.json", @"../monoLeftSellRequest.json", InshePercentage);
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
-                        parseMode: ParseMode.Markdown,
+                        text: $"➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>",
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
 
                     await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через <b>ордер на P2P-платформі Binance</b> (виступає як гарант угоди)?",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown);
+                    parseMode: ParseMode.Html);
 
                     break;
                 case 8:
 
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
-                        text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *500 USDT* - *100000 USDT*):",
+                        text: $"Введіть суму <b>Tether, USDT</b>, яку віддаєте ➡️ (ліміт: <b>500 USDT</b> - <b>100000 USDT</b>):",
                         replyMarkup: inlineKeyboard,
-                        parseMode: ParseMode.Markdown,
+                        parseMode: ParseMode.Html,
                         cancellationToken: cancellationToken
                     );
                     break;
@@ -1998,16 +1998,16 @@ class Program
                 }
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
-                    parseMode: ParseMode.Markdown,
+                    text: $"➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
 
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через <b>ордер на P2P-платформі Binance</b> (виступає як гарант угоди)?",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown);
+                    parseMode: ParseMode.Html);
 
             }
             else if (costomerModel[chatId].CurrencyCell == currencies[2])
@@ -2015,16 +2015,16 @@ class Program
                 costomerModel[chatId].Course = await binanceService.CountRightProcentPriceAsync(@"../pryvatRightBuyRequest.json", @"../pryvatRightSellRequest.json", PryvatPercentage);
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*",
-                    parseMode: ParseMode.Markdown,
+                    text: $"➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
 
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "❗️Чи бажаєте ви здійснити дану угоду через *ордер на P2P-платформі Binance* (виступає як гарант угоди)?",
+                    text: "❗️Чи бажаєте ви здійснити дану угоду через <b>ордер на P2P-платформі Binance</b> (виступає як гарант угоди)?",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown);
+                    parseMode: ParseMode.Html);
             }
         }
     }
@@ -2093,9 +2093,9 @@ class Program
 
                     await botClient.SendTextMessageAsync(
                        chatId: chatId,
-                       text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *500 USDT* - *100000 USDT*):",
+                       text: $"Введіть суму <b>Tether, USDT</b>, яку віддаєте ➡️ (ліміт: <b>500 USDT</b> - <b>100000 USDT</b>):",
                        replyMarkup: inlineKeyboard,
-                       parseMode: ParseMode.Markdown,
+                       parseMode: ParseMode.Html,
                        cancellationToken: cancellationToken
                    );
                     break;
@@ -2118,7 +2118,7 @@ class Program
             await botClient.SendTextMessageAsync(
                chatId: chatId,
                text: $"Мінімальна сума = 100 одиниць\nМаксимальна сума = 20000 одиниць",
-               parseMode: ParseMode.Markdown,
+               parseMode: ParseMode.Html,
                cancellationToken: cancellationToken
            );
             return;
@@ -2130,7 +2130,7 @@ class Program
             await botClient.SendTextMessageAsync(
                chatId: chatId,
                text: $"Мінімальна сума = 4000 гривень\nМаксимальна сума = 900000 гривень",
-               parseMode: ParseMode.Markdown,
+               parseMode: ParseMode.Html,
                cancellationToken: cancellationToken
            );
             return;
@@ -2157,9 +2157,9 @@ class Program
                 max = 20000;
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: $"Введіть суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: *{min} USDT* - *{max} USDT*):",
+                   text: $"Введіть суму <b>Tether, USDT</b>, яку віддаєте ➡️ (ліміт: <b>{min} USDT</b> - <b>{max} USDT</b>):",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -2180,9 +2180,9 @@ class Program
 
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: $"Введіть суму *{costomerModel[chatId].CurrencyCell}*, яку віддаєте ➡️ (ліміт: *{min} UAH* - *{max} UAH*):",
+                   text: $"Введіть суму <b>{costomerModel[chatId].CurrencyCell}</b>, яку віддаєте ➡️ (ліміт: <b>{min} UAH</b> - <b>{max} UAH</b>):",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -2190,8 +2190,8 @@ class Program
             {
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: $"Зазначне суму *Tether, USDT*, яку віддаєте ➡️ (ліміт: 500 USDT - 100000 USDT):",
-                   parseMode: ParseMode.Markdown,
+                   text: $"Зазначне суму <b>Tether, USDT</b>, яку віддаєте ➡️ (ліміт: 500 USDT - 100000 USDT):",
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -2212,9 +2212,9 @@ class Program
 
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
-                   text: $"Зазначне суму {costomerModel[chatId].CurrencyCell}, яку віддаєте ➡️ (ліміт: *{min} {valute} - {max} {valute}*):",
+                   text: $"Зазначне суму {costomerModel[chatId].CurrencyCell}, яку віддаєте ➡️ (ліміт: <b>{min} {valute} - {max} {valute}</b>):",
                    replyMarkup: inlineKeyboard,
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -2238,9 +2238,9 @@ class Program
 
                 UserMessage[chatId] = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"📥 Заявка ID: *{randomNumber}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Не підтверджена* ⚠️",
+                    text: $"📥 Заявка ID: <b>{randomNumber}</b>\n \n💰 Послуга: <b>{costomerModel[chatId].Service}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Не підтверджена</b> ⚠️",
                     replyMarkup: inlineKeyboard,
-                    parseMode: ParseMode.Markdown,
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
                 SendToAdmin(botClient, chatId, cancellationToken);
@@ -2250,7 +2250,7 @@ class Program
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: $"З вмами скоро зв'яжеться адміністратор",
-                   parseMode: ParseMode.Markdown,
+                   parseMode: ParseMode.Html,
                    cancellationToken: cancellationToken
                );
             }
@@ -2302,8 +2302,8 @@ class Program
             var order = costomerModel[chatId].Order ? "Так" : "Ні";
             AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
                 chatId: adminChatId,
-                text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: Ні",
-                parseMode: ParseMode.Markdown,
+                text: $"<b>Заявка банкінг:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс <b>1:{costomerModel[chatId].Course}</b>\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: Ні",
+                parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken
             );
         }
@@ -2311,8 +2311,8 @@ class Program
         {
             AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
                 chatId: adminChatId,
-                text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: Ні",
-                parseMode: ParseMode.Markdown,
+                text: $"<b>Заявка готівка:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: Ні",
+                parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken
             );
         }
@@ -2320,8 +2320,8 @@ class Program
         {
             AdminMessage[adminChatId] = await botClient.SendTextMessageAsync(
                 chatId: adminChatId,
-                text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: Ні",
-                parseMode: ParseMode.Markdown,
+                text: $"<b>Заявка послуга:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: Ні",
+                parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken
             );
         }
@@ -2337,8 +2337,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: *Так*",
-                    parseMode: ParseMode.Markdown
+                    text: $"<b>Заявка банкінг:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс <b>1:{costomerModel[chatId].Course}</b>\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\nПідтверджена: <b>Так</b>",
+                    parseMode: ParseMode.Html
                 );
             }
             else if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
@@ -2346,8 +2346,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: *Так*",
-                    parseMode: ParseMode.Markdown,
+                    text: $"<b>Заявка готівка:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \nПідтверджена: <b>Так</b>",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
             }
@@ -2356,8 +2356,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: *Так*",
-                    parseMode: ParseMode.Markdown,
+                    text: $"<b>Заявка послуга:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \nПідтверджена: <b>Так</b>",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
             }
@@ -2370,8 +2370,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка банкінг:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс *1:{costomerModel[chatId].Course}*\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\n*Скасована* ❌",
-                    parseMode: ParseMode.Markdown
+                    text: $"<b>Заявка банкінг:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nКурс <b>1:{costomerModel[chatId].Course}</b>\nРеквізити: {costomerModel[chatId].CardNumber}\nЧерез ордер: {order}\n<b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html
                 );
             }
             else if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
@@ -2379,8 +2379,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка готівка:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \n*Скасована* ❌",
-                    parseMode: ParseMode.Markdown,
+                    text: $"<b>Заявка готівка:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nВіддає: {costomerModel[chatId].CurrencyCell}\nОтримує: {costomerModel[chatId].CurrencyGet}\nСкільки віддає: {costomerModel[chatId].HowMuchGives}\nСкільки отримує: {costomerModel[chatId].HowMuchGet}\nРеквізити: {costomerModel[chatId].CardNumber}\n \n<b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
             }
@@ -2389,8 +2389,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: adminChatId,
                     messageId: AdminMessage[adminChatId].MessageId,
-                    text: $"*Заявка послуга:*\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \n*Скасована* ❌",
-                    parseMode: ParseMode.Markdown,
+                    text: $"<b>Заявка послуга:</b>\n \nId: {costomerModel[chatId].Id}\nКлієнт: {costomerModel[chatId].FirstName} {costomerModel[chatId].LastName} @{costomerModel[chatId].Username}\nНомер телефону: {costomerModel[chatId].Phone}\nПослуга: {costomerModel[chatId].Service}\n \n<b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html,
                     cancellationToken: cancellationToken
                 );
             }
@@ -2405,16 +2405,16 @@ class Program
             {
                 var sendValute = costomerModel[chatId].CurrencyCell == currencies[0] ? "USDT" : "UAH";
                 var getCurr = costomerModel[chatId].CurrencyGet == currencies[0] ? "USDT" : "UAH";
-                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
                 if (costomerModel[chatId].CurrencyGet == currencies[0])
                 {
-                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
                 }
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} {sendValute}*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {getCurr}*\n \n🔐 P2P-ордер: *{order}* {card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Підтверджена* ✅",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} {sendValute}</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} {getCurr}</b>\n \n🔐 P2P-ордер: <b>{order}</b> {card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Підтверджена</b> ✅",
+                    parseMode: ParseMode.Html
                 );
             }
             else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
@@ -2451,8 +2451,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} *{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Підтверджена* ✅",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} <b>{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}</b>\n \n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Підтверджена</b> ✅",
+                    parseMode: ParseMode.Html
                 );
             }
             else if (costomerModel[chatId].Service != null)
@@ -2460,8 +2460,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Підтверджена* ✅",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n💰 Послуга: <b>{costomerModel[chatId].Service}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Підтверджена</b> ✅",
+                    parseMode: ParseMode.Html
                 );
             }
         }
@@ -2472,16 +2472,16 @@ class Program
             {
                 var sendValute = costomerModel[chatId].CurrencyCell == currencies[0] ? "USDT" : "UAH";
                 var getCurr = costomerModel[chatId].CurrencyGet == currencies[0] ? "USDT" : "UAH";
-                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: *{costomerModel[chatId].CardNumber}*";
+                var card = costomerModel[chatId].Order ? " " : $"\n💳 Номер карти: <b>{costomerModel[chatId].CardNumber}</b>";
                 if (costomerModel[chatId].CurrencyGet == currencies[0])
                 {
-                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: *{costomerModel[chatId].CardNumber}*";
+                    card = costomerModel[chatId].Order ? " " : $"\n💸 Адреса гаманця TRC20: <b>{costomerModel[chatId].CardNumber}</b>";
                 }
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Курс: *1:{costomerModel[chatId].Course}*\n \n💸 Сума, яку потрібно надіслати: *{costomerModel[chatId].HowMuchGives} {sendValute}*\n💰 Сума, яку отримаєте: *{costomerModel[chatId].HowMuchGet} {getCurr}*\n \n🔐 P2P-ордер: *{order}* {card}\n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Скасована* ❌",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Курс: <b>1:{costomerModel[chatId].Course}</b>\n \n💸 Сума, яку потрібно надіслати: <b>{costomerModel[chatId].HowMuchGives} {sendValute}</b>\n💰 Сума, яку отримаєте: <b>{costomerModel[chatId].HowMuchGet} {getCurr}</b>\n \n🔐 P2P-ордер: <b>{order}</b> {card}\n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html
                 );
             }
             else if (costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[7] || costomerModel[chatId].CurrencyGet == currencies[8] || costomerModel[chatId].CurrencyGet == currencies[17]) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[7] || costomerModel[chatId].CurrencyCell == currencies[8] || costomerModel[chatId].CurrencyCell == currencies[17])))
@@ -2518,8 +2518,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n➡️ Віддаєте: *{costomerModel[chatId].CurrencyCell}*\n⬅️ Отримуєте: *{costomerModel[chatId].CurrencyGet}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} *{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}*\n \n📲 Контакт: *{costomerModel[chatId].FirstName}*, @{costomerModel[chatId].Username}\n \nСтатус заявки: *Скасована* ❌",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n➡️ Віддаєте: <b>{costomerModel[chatId].CurrencyCell}</b>\n⬅️ Отримуєте: <b>{costomerModel[chatId].CurrencyGet}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами валюти повідомить менеджер після підтвердження.\n \n{getOrGive} <b>{(HowMuchGet[chatId] == true ? costomerModel[chatId].HowMuchGet : costomerModel[chatId].HowMuchGives)} {valute}</b>\n \n📲 Контакт: <b>{costomerModel[chatId].FirstName}</b>, @{costomerModel[chatId].Username}\n \nСтатус заявки: <b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html
                 );
             }
             else if (costomerModel[chatId].Service != null)
@@ -2527,8 +2527,8 @@ class Program
                 await botClient.EditMessageTextAsync(
                     chatId: chatId,
                     messageId: UserMessage[chatId].MessageId,
-                    text: $"📥 Заявка ID: *{costomerModel[chatId].Id}*\n \n💰 Послуга: *{costomerModel[chatId].Service}*\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: *Ярослав*, @yarius13\n \nСтатус заявки: *Скасована* ❌",
-                    parseMode: ParseMode.Markdown
+                    text: $"📥 Заявка ID: <b>{costomerModel[chatId].Id}</b>\n \n💰 Послуга: <b>{costomerModel[chatId].Service}</b>\n📈 Актуальні курси на момент створення заявки та детальну інформацію щодо обраної вами послуги повідомить менеджер після підтвердження.\n \n📲 Контакт: <b>Ярослав</b>, @yarius13\n \nСтатус заявки: <b>Скасована</b> ❌",
+                    parseMode: ParseMode.Html
                 );
             }
         }

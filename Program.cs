@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using CryptoBot;
 using CryptoBot.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.VisualBasic;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;

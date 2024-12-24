@@ -37,7 +37,7 @@ class Program
 
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        var bot = new TelegramBotClient("apiToken");
+        var bot = new TelegramBotClient("7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y");
         var cts = new CancellationTokenSource();
 
         _ = Task.Run(() => StartBot(bot, cts.Token));
@@ -983,6 +983,7 @@ class Program
             }
             else if (msg.Text == "/admingroup")
             {
+                Console.WriteLine(chatId);
                 await botClient.SendTextMessageAsync(
                    chatId: chatId,
                    text: "Введіть пароль",

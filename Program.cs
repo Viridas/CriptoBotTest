@@ -12,7 +12,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 class Program
 {
-    private static string filePath = "D:/ForBotTests/CryptoBot/AdminChatId.txt";
+    private static string filePath = @"../AdminChatId.txt";
     private static decimal MonoPercentage = 1.5m;
     private static decimal PryvatPercentage = 1.5m;
     private static decimal InshePercentage = 1.7m;

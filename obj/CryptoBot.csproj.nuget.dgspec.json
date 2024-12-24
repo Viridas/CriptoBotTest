@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ForBotTests\\CryptoBot\\CryptoBot.csproj": {}
+    "d:\\ForBotTests\\CryptoBot\\CryptoBot.csproj": {}
   },
   "projects": {
-    "D:\\ForBotTests\\CryptoBot\\CryptoBot.csproj": {
+    "d:\\ForBotTests\\CryptoBot\\CryptoBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ForBotTests\\CryptoBot\\CryptoBot.csproj",
+        "projectUniqueName": "d:\\ForBotTests\\CryptoBot\\CryptoBot.csproj",
         "projectName": "CryptoBot",
-        "projectPath": "D:\\ForBotTests\\CryptoBot\\CryptoBot.csproj",
+        "projectPath": "d:\\ForBotTests\\CryptoBot\\CryptoBot.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\ForBotTests\\CryptoBot\\obj\\",
+        "outputPath": "d:\\ForBotTests\\CryptoBot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -52,20 +52,6 @@
               "target": "Package",
               "version": "[1.11.65, )"
             },
-            "Microsoft.AspNetCore.Http": {
-              "target": "Package",
-              "version": "[2.2.2, )"
-            },
-            "Microsoft.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[9.0.0, )"
-            },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[9.0.0, )"
-            },
             "Microsoft.Extensions.Hosting": {
               "target": "Package",
               "version": "[8.0.1, )"
@@ -73,10 +59,6 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
-            },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
-              "target": "Package",
-              "version": "[9.0.2, )"
             },
             "Telegram.Bot": {
               "target": "Package",

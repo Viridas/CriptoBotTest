@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 using CryptoBot;
 using CryptoBot.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -12,7 +15,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 class Program
 {
-    private static Dictionary<long, Telegram.Bot.Types.Message> lastMessage = new Dictionary<long, Telegram.Bot.Types.Message>();
+    private static DataService _databaseService;
     private static decimal MonoPercentage = 1.5m;
     private static decimal PryvatPercentage = 1.5m;
     private static decimal InshePercentage = 1.7m;
@@ -35,9 +38,10 @@ class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        CreateHostBuilder(args).Build().Run();
+
         var apiToken = Environment.GetEnvironmentVariable("API_TOKEN");
 
-        /// Api Token for tests 7839988576:AAGOG9JkSZE_p4z_IN14-mdt4HSgSR2a74Y
         var bot = new TelegramBotClient(apiToken);
         var cts = new CancellationTokenSource();
 
@@ -47,6 +51,16 @@ class Program
         app.MapGet("/", () => "Bot is running...");
         app.Run();
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
+
+                services.AddTransient<DataService>();
+            });
 
     private static async Task StartBot(TelegramBotClient bot, CancellationToken cancellationToken)
     {
@@ -155,6 +169,7 @@ class Program
     }
     static async Task OnMessage(ITelegramBotClient botClient, Message msg, CancellationToken cancellationToken)
     {
+        adminChatId = await _databaseService.GetAdminIdAsync();
         var chatId = msg.Chat.Id;
 
         try
@@ -954,7 +969,7 @@ class Program
                         }
                     }
 
-                    costomerModel[chatId].CardNumber = result.ToString();;
+                    costomerModel[chatId].CardNumber = result.ToString(); ;
                     if (costomerModel[chatId].Phone == null)
                     {
                         var keyboard = new ReplyKeyboardMarkup(new[]
@@ -992,6 +1007,9 @@ class Program
             }
             else if (msg.Text == "/vsbhupw383e2asnx390g")
             {
+                Admin a = new Admin{Id = 1, AdminChatId = chatId};
+
+                _databaseService.AddAdminAsync(a);
                 adminChatId = chatId;
 
 
@@ -2295,6 +2313,7 @@ class Program
     }
     static async Task SendToAdmin(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
     {
+        adminChatId = await _databaseService.GetAdminIdAsync();
         costomerModel[chatId].IfEnd = false;
         if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
         {
@@ -2328,6 +2347,7 @@ class Program
 
     static async Task ChangeAgminMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, bool ifAccess)
     {
+        adminChatId = await _databaseService.GetAdminIdAsync();
         if (ifAccess)
         {
             if ((costomerModel[chatId].CurrencyCell == currencies[0] && (costomerModel[chatId].CurrencyGet == currencies[1] || costomerModel[chatId].CurrencyGet == currencies[2] || costomerModel[chatId].CurrencyGet == currencies[3])) || (costomerModel[chatId].CurrencyGet == currencies[0] && (costomerModel[chatId].CurrencyCell == currencies[1] || costomerModel[chatId].CurrencyCell == currencies[2] || costomerModel[chatId].CurrencyCell == currencies[3])))
